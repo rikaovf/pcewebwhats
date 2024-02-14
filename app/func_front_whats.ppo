@@ -1,0 +1,269 @@
+
+
+
+
+function RetornaNumeros()
+
+
+LOCAL aNums := {}
+local aARQS := { { "ACE920.001",,, "ICE9202" } }
+
+if ! abre_fecha_arquivos(aArqs, .T.)
+    abre_fecha_arquivos(aArqs, .F.)
+    return nil
+endif
+
+while ! ace920->(eof())
+    aadd(aNums, ace920->w_far_num)
+    ace920->(dbskip())
+enddo
+
+abre_fecha_arquivos(aArqs, .T.)
+
+return aNums
+
+
+
+
+function PhonePortaWhats(cNum)
+
+local cPort := ""
+local aARQS := { { "ACE920.001",,, "ICE9202" } }
+
+if ! abre_fecha_arquivos(aArqs, .T.)
+    abre_fecha_arquivos(aArqs, .F.)
+    return nil
+endif
+
+ace920->(DbGoTop())
+
+if ace920->(OrdKeyCount()) = 1
+    cPort := "3000"
+elseif ace920->(DbSeek(cNum))
+    cPort := allTrim(ACE920->W_DATA)
+endif
+
+abre_fecha_arquivos(aArqs, .T.)
+
+return cNum
+
+
+
+
+
+function formataTelefone( cFone )
+
+    LOCAL cFoneRet := ""
+
+    cFone := Right( cFone, 11 )
+
+    do case
+        case len(alltrim(cFone)) = 10
+            cFoneRet := transform( cFone, "@R (99) 9999-9999" )
+
+        otherwise
+            cFoneRet := transform( cFone, "@R (99)99999-9999" )
+
+    endcase
+
+return cFoneRet
+
+
+
+
+
+
+
+function retornaNomeCliente( lFoneGrupo, cChaveCli, lForcaAtualiza )
+
+    LOCAL cCli_Nome  := ""
+    LOCAL cCli_chave := alltrim(ACE398->chave_cli)
+    LOCAL lLocked
+
+    hb_default(@lFoneGrupo, .F.)
+    hb_default(@cChaveCli, .F.)
+    hb_default(@lForcaAtualiza, .F.)
+
+    IF !empty( cChaveCli)
+        if ACE398->( dbSeekord( cChaveCli, "ICE3981" ) )
+            cCli_chave := alltrim(ACE398->chave_cli)
+        else
+            cCli_Nome := "cliente nÒo encontrado"
+        endif
+    ENDIF
+
+    if ACE398->(dbVazio())
+        return cCli_Nome
+    endif
+
+    if lFoneGrupo
+        cCli_chave := alltrim(ACE397->chave_cli)
+    endif
+
+    if !lFoneGrupo .AND. (empty(cCli_chave) .OR. cCli_chave = "NaoEncontrado" .OR. cCli_chave = "Erro" .OR. lForcaAtualiza )
+        cCli_chave := retornaChaveCliente(, "ACE398")
+        IF ! ACE398->chave_cli == cCli_chave
+            IF !( lLocked := ACE398->(IsLocked()) )
+            ACE398->(netDbRLock())
+            ENDIF
+            ACE398->chave_cli := cCli_chave
+            IF ! lLocked
+            ACE398->(dbUnlock())
+            ENDIF
+        ENDIF
+    endif
+
+    if lFoneGrupo .AND. (empty(cCli_chave) .OR. cCli_chave = "NaoEncontrado" .OR. cCli_chave = "Erro" .OR. left(cCli_chave, 3) = "GRP")
+        cCli_Nome := transform( ACE397->n_whatsapp, "@R 99 (99) 99999-9999" )
+
+    elseif empty(cCli_chave)
+        cCli_Nome := ""
+
+    elseif left(cCli_chave, 3) = "GRP"
+        cCli_Nome := CodToDes( cCli_chave + ACE398->PHONE, "ACE920.001", "ICE9200", "W_NOMEGRP" )
+
+    elseif cCli_chave = "NaoEncontrado"
+        cCli_Nome := "Telefone não cadastrado."
+
+    elseif cCli_chave = "Erro"
+        cCli_Nome := "Erro no registro da mensagem."
+
+    else
+        cCli_Nome := CodToDes( cCli_chave, "ACE026.001", "ICE0268", "CLI_NOM" )
+
+    endif
+
+return cCli_Nome
+
+
+
+
+
+
+function retornaChaveCliente( lForcaCliente, cAlias, cFone )
+
+    local cGrupo := ""
+    local cChave_Cli := ""
+    local cDDD := ""
+    local nRec
+
+    hb_default(@lForcaCliente, .F.)
+    hb_default(@cAlias, "")
+    hb_default(@cFone, "")
+
+    if empty(cFone)
+        cFone := (cAlias)->n_whatsapp
+
+        if !lForcaCliente .AND. cAlias = "SQLMensagens"
+            cGrupo := (cAlias)->n_wpp_grp
+        endif
+    endif
+
+    if len( alltrim( cFone ) ) > 9
+        cFone := right( cFone, len(cFone)-4 )
+
+    endif
+
+    cFone := padl( alltrim(cFone), FoneTamanho() )
+
+    if !empty(cGrupo)
+        cChave_Cli := "GRP" + cGrupo
+
+    elseif !empty( cFone )
+
+
+
+
+        if ACE026->( dbSeekOrd( padl(cFone, 10), "ICE0261"  ) ) .OR. ACE026->( dbSeekOrd( padl(cFone, 10), "ICE02610" ) ) .OR. ACE026->( dbSeekOrd( padl(cFone, 10), "ICE02611" ) ) .OR. ACE026->( dbSeekOrd( padl(cFone, 10), "ICE02612" ) )
+
+
+
+            nRec := ace026->( RecNo(  ) )
+            if ParametroWhatsApp("CLI_CHTIT",,.T.) .AND. !Empty( Ace026->Cli_Chatit ) .AND. Ace026->(DbSeekOrd(Ace026->Cli_ChaTit,"ICE0268") )
+            ace026->(DbGoTo(nRec))
+            cChave_Cli := Ace026->Cli_Chatit
+            else
+            cChave_Cli := ACE026->cli_chave
+            endif
+
+        else
+            cChave_Cli := "NaoEncontrado"
+
+        endif
+
+    else
+        cChave_Cli := "Erro"
+    endif
+
+return cChave_Cli
+
+
+
+
+
+
+function DbVazio()
+
+    local nREG, lVAZIO
+
+    if EMPTY( ALIAS() )
+        return ( .T. )
+    endif
+
+    nREG   := RecNo()
+
+    DbGoTop()
+
+    lVAZIO := BOF() .AND. EOF()
+
+    DbGoto( nREG )
+
+Return ( lVAZIO )
+
+
+
+
+
+
+
+
+FUNCTION ParametroWhatsApp( cCampo, cFilial, uDefault, uValor )
+    local nPosicao
+    local nHandle
+
+
+    hb_default(@cFilial, NIL)
+    hb_default(@uDefault, NIL)
+    hb_default(@uValor, uDefault)
+
+
+    xNETUSE( "ACEWHATS.001", "ACEWHATS", "C" )
+
+    dbSelectArea( "ACEWHATS" )
+
+    if !EMPTY(cFILIAL)
+       DBSETFILTER( { || ACEWHATS->FILIAL == cFILIAL } )
+    endif
+
+    if ( nPOSICAO :=  FIELDPOS( cCAMPO ) ) > 0
+       if Empty( uValor) .OR. !Empty( uDefault )
+          uValor := FIELDGET( nPOSICAO )
+       endif
+
+       if (  Empty( uValor) .AND. ValType(uValor) <> "L" ) .OR. (ValType( uValor ) == "N" .AND. uValor == 0 )
+          uValor := uDefault
+       endif
+
+       BEGIN SEQUENCE WITH __BreakBlock()
+          NETDBRLOCK()
+          FIELDPUT( nPOSICAO, uValor )
+          DBUNLOCK()
+       RECOVER
+
+       end
+
+    endif
+
+    DBCLEARFILTER()
+
+ RETURN uValor

@@ -1,0 +1,6 @@
+#include "GeralSis.ch"
+
+SET EOL CHR(13)+CHR(10)      
+HB_LANGSELECT( "PT", "PT850" )
+HB_SETCODEPAGE( "PT850" )
+SET DBFLOCKSCHEME TO 3

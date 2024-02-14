@@ -1,0 +1,11 @@
+#define _indef             0
+#define _novo_atend        1
+#define _aguard_resp_cli   2
+#define _aguard_resp_far   3
+#define _atend_encerrado   4
+#define _grupo_whatsapp    5
+#define _nova_conversa     6
+#define _atend_arquivado   7
+#define _atend_encerrado2  8
+#define _atend_chatbot     9
+#define _messsage_auto     10

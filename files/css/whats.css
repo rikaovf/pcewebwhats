@@ -1,0 +1,139 @@
+.header{
+    display: flex;
+    height: 5.5em;
+    margin-bottom: 2px;
+}
+
+.img-w{
+    height: inherit;
+    width: 100%;
+    margin-top: 0px;
+    margin-left: 0px;
+    background-image: url('../../data/whatsconcentra-sem-sombra.png'); 
+    background-repeat: no-repeat;
+}
+
+
+body{
+    background-image: linear-gradient(rgb(233, 224, 224), white);
+    background-repeat: no-repeat;
+}
+
+html ::-webkit-scrollbar {
+    width: 10px;
+}
+
+html ::-webkit-scrollbar-thumb {
+    border-radius: 50px;
+    background: black;
+}
+
+html ::-webkit-scrollbar-track {
+    background: #ededed
+
+}
+
+#container-whats{
+    width: 100%;
+    height: 75vh;
+}
+
+.conversa_pai{
+    height: 100%;    
+}
+
+.contato{
+    display:flex;
+    flex-direction: row;
+    height: 10%;
+    background-image: linear-gradient(225deg, grey, transparent);
+}
+
+.contato-nome{
+    margin-left: 1rem;
+    max-width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    align-content: center;
+    font-size: 1.5em;
+    text-shadow: lightgray 1px 1px;
+}
+
+.contato-foto{
+    
+}
+
+.conversa{
+    max-width:100%;
+    height:95%;
+    margin: 2px 2px 2px;
+}
+
+.msg{
+    width: max-content;
+}
+
+.borda_caixa_conv{
+    border-style: groove;
+    border-color: rgb(213, 206, 206);
+    border-width: 2px;
+    border-radius: 5px;
+}
+
+.texto_btn{
+    background-color: whitesmoke;
+    border-radius: 10px;
+    height:7%;
+    margin: 3px 2px 2px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.texto_input{
+    border-width: 0px;
+    width:100%;
+    margin: 0px 0px 0px;
+}
+
+.btn_envia{
+    margin: 0px 0px 0px;
+    box-shadow: 0 0 0 0;
+    border: 0 none;
+    outline: 0;
+}
+
+.btn_sair{
+    background-color: inherit;
+    margin: -3em 0px 0px
+    box-shadow: 0 0 0 0;
+    border: 0 none;
+    outline: 0;
+}
+
+textarea{
+    resize: none;
+    font-size: 1.5rem;
+}
+
+button:focus, select:focus {
+    box-shadow: 0 0 0 0;
+    border: 0 none;
+    outline: 0;
+}
+
+textarea:focus, input:focus, select:focus {
+    box-shadow: 0 0 0 0;
+    border: 0 none;
+    outline: 0;
+}
+
+#btn_envia_svg{
+    font-size: 2em;
+    margin-right: -1rem
+}
+
+#btn_sair_svg{
+    font-size: 2em;
+    margin-right: -1rem
+}
