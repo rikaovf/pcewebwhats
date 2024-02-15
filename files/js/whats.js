@@ -133,7 +133,7 @@ function carregaConversa(msgs){
     
     textoBtn.id = 'texto_btn';
     textoBtn.classList.add('texto_btn', 'borda_caixa_conv', 'col-12');
-    convPai.insertAdjacentElement("beforeend", textoBtn)						;
+    convPai.insertAdjacentElement("beforeend", textoBtn);
     //////////
 
 
@@ -155,6 +155,7 @@ function carregaConversa(msgs){
     textoEnviar.addEventListener('keyup', function(event) {
 
         if (! event.shiftKey && event.key === 'Enter') {
+            textoEnviar.value = textoEnviar.value.slice(0, textoEnviar.value.length - 1);
             EnviaMensagem();
         }
     });
@@ -178,6 +179,9 @@ function carregaConversa(msgs){
     
     textoBtn.insertAdjacentElement("beforeend", btnEnviar);
     ///////////
+
+
+    conversa.scrollTo( { top: 1000000000, behavior: "smooth" } );
 
     return true;
 }

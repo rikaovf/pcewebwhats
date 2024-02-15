@@ -10,7 +10,8 @@
 	DEFINE WEB oWeb TITLE 'Concentra Whatsapp'
 
 		oWeb:AddCss("https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css")
-		oWeb:AddCss("files/css/whats.css")	
+		oWeb:AddCss("files/css/whats.css")
+		oWeb:AddCss("files/css/loader.css")	
 		oWeb:AddJs("files/js/whats.js")
 	
 		DEFINE FORM o ID 'brw_whats' API 'api_brw_whats' OF oWeb 
@@ -96,7 +97,9 @@
 					
 					var brwWhats = document.getElementById("brw_whats");
 
+					element.setAttribute("style", "visibility:hidden;")
 					element.id = 'container-whats';
+					
 					
 					brwWhats.classList.add('col-12');
 					card.classList.add('borda_caixa_conv');
