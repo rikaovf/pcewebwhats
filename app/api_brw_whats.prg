@@ -11,7 +11,7 @@ function Api_Brw_whats( oDom )
 	do case
 		case oDom:GetProc() == 'setdatawhats'
 			SetDataWhats( oDom )						
-		case oDom:GetProc() == 'abreconversa'
+		case oDom:GetProc() == 'abreconversa'// .or. oDom:GetProc() == 'atualizamsgs'
 			SetMsgWhats( oDom )
 		case oDom:GetProc() == 'encerrar_sessao'            
 			USessionEnd()
@@ -142,7 +142,6 @@ retu aRows
 function SetMsgWhats( oDom )
 
 local hBrowse, hUpdated, n
-
 local aMsgs := {}
 
 local aARQS := { { "ACE397.001",,, "ICE39702" } }
@@ -156,13 +155,14 @@ endif
 
 try
 	hBrowse 	:= oDom:Get( 'tablewhats' )
-	hUpdated	:= hBrowse['selected'][1]
+	hUpdated := if (empty(hBrowse['selected']), '', hBrowse['selected'][1])
 
 	if hUpdated == nil .or. empty(hUpdated)
+		oDom:SetJs('clicaNaConversaAtualiza', {.T.})
 		Throw( ErrorNew( "Erro de mensagens", 0, 0, "Forced Error", "Erro ao carregar mensagens." ) )
 	endif
 catch
-	oDom:SetError("Erro ao abrir as mensagens!")
+	//oDom:SetError("Erro ao abrir as mensagens!")
 	
 	return nil
 end
@@ -183,12 +183,13 @@ while ! ace397->(eof())
 					"text" => ace397->text,;
 					"data" => ace397->data,;
 					"hora" => ace397->hora,;
-					"resposta" => ace397->resposta}	)
+					"resposta" => ace397->resposta,;
+					"msg_id" => ace397->msg_id }	)
 
 	ace397->(DbSkip())
 enddo
 
-oDom:SetJs('abrir_conversa', { 'msgs', aMsgs } )
+oDom:SetJs('abrirConversa', { aMsgs } )
 
 abre_fecha_arquivos(aArqs, .F.)
 

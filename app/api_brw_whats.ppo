@@ -140,7 +140,6 @@ retu aRows
 function SetMsgWhats( oDom )
 
 local hBrowse, hUpdated, n
-
 local aMsgs := {}
 
 local aARQS := { { "ACE397.001",,, "ICE39702" } }
@@ -154,13 +153,14 @@ endif
 
 BEGIN SEQUENCE WITH __BreakBlock()
     hBrowse     := oDom:Get( "tablewhats" )
-    hUpdated    := hBrowse["selected"][1]
+    hUpdated := if (empty(hBrowse["selected"]), "", hBrowse["selected"][1])
 
     if hUpdated == nil .OR. empty(hUpdated)
+        oDom:SetJs("clicaNaConversaAtualiza", {.T.})
         Throw( ErrorNew( "Erro de mensagens", 0, 0, "Forced Error", "Erro ao carregar mensagens." ) )
     endif
 RECOVER
-    oDom:SetError("Erro ao abrir as mensagens!")
+
 
     return nil
 end
@@ -181,12 +181,13 @@ while ! ace397->(eof())
 
 
 
-    Aadd( aMsgs,  { "id" => alltrim(str(n++)), "st" => ace397->st, "media_type" => ace397->media_type,    "text" => ace397->text,    "data" => ace397->data,    "hora" => ace397->hora,    "resposta" => ace397->resposta}    )
+
+    Aadd( aMsgs,  { "id" => alltrim(str(n++)), "st" => ace397->st, "media_type" => ace397->media_type,    "text" => ace397->text,    "data" => ace397->data,    "hora" => ace397->hora,    "resposta" => ace397->resposta,    "msg_id" => ace397->msg_id }    )
 
     ace397->(DbSkip())
 enddo
 
-oDom:SetJs("abrir_conversa", { "msgs", aMsgs } )
+oDom:SetJs("abrirConversa", { aMsgs } )
 
 abre_fecha_arquivos(aArqs, .F.)
 

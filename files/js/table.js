@@ -1,4 +1,6 @@
 var rowData = {};
+var nWhatsapp = '';
+
 var table = Tabulator.findTable('#brw_whats-tablewhats')[0]
 
 const carregouTable = setInterval(() => {
@@ -43,6 +45,7 @@ const carregouTable = setInterval(() => {
         
         table.on("rowClick", function(e, row){
             rowData = row.getData();
+            nWhatsapp = rowData.N_WHATSAPP;
         });
     }
 }, 1000);

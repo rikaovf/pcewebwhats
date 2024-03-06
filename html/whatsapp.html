@@ -37,19 +37,25 @@
 			//////////////// FIM CABEÇALHO //////////////
 
 
-			BUTTON ID 'atualiza_chats' LABEL '' ACTION 'setdatawhats' CLASS 'p-2' GRID 1 OF o
+			/////// BOTAO GENERICO PARA ATUALIZAR OS CHATS - APOS INICIO FICA HIDDEN //////
+			BUTTON ID 'atualiza_chats' LABEL '' ACTION 'setdatawhats' GRID 1 OF o
+			///////////////////////////////////////////////////////////////////////////////
+			
 
+			////////////// INICIALIZAÇÃO DE VARIAVEIS //////////////
 			HTML o
 				<script>
 					var phone = '';
 					var port = '';
+					var idRetag = '';
 					var phoneEmpty = 'true';
 					var config = {};
-					var atualiza = document.getElementById("brw_whats-atualiza_chats");
+					var atualiza = false;
+					var atualizaChats = document.getElementById("brw_whats-atualiza_chats");
 
 					setTimeout(() => {
-						atualiza.click();
-						atualiza.hidden = true;
+						atualizaChats.click();
+						atualizaChats.hidden = true;
 					}, 100);
 				</script>
 
@@ -59,13 +65,13 @@
 					config = configServer;
 				</script>
 			ENDTEXT	
-			
+			//////////////////////////////////////////////////////////
+
+
+
 			ROW o VALIGN 'top'
-			
 				COL o CLASS 's-0' GRID 11
-				
-					//	https://tabulator.info/docs/5.4/options
-				
+
 					aOptions := { ;
 						'index' => 'id',;
 						'maxHeight' => '85vh',;
@@ -75,9 +81,6 @@
 					aEvents := { { 'name' => 'rowClick' , 'proc' => 'abreconversa'} }
 					
 					DEFINE BROWSE oBrw ID 'tablewhats' OPTIONS aOptions EVENTS aEvents OF o 
-						
-						//	https://tabulator.info/docs/5.4/columns 
-						
 						COL oCol TO oBrw CONFIG { 'title' => "Nome", 'field' => "CHAVE_CLI", 'width' => 200 }
 						COL oCol TO oBrw CONFIG { 'title' => "Telefone", 'field' => "N_WHATSAPP", 'width' => 200 }
 						COL oCol TO oBrw CONFIG { 'title' => "Situação", 'field' => "SITUACAO", 'formatter' => '_CorSituacao' }
@@ -85,11 +88,13 @@
 						COL oCol TO oBrw CONFIG { 'title' => "Hora", 'field' => "HORA" }
 						COL oCol TO oBrw CONFIG { 'title' => "Funcionário", 'field' => "FUNC_ABERT", 'width' => 1000 }
 					INIT BROWSE oBrw 
-
 				ENDCOL o			
-		
 			ENDROW o		
 			
+
+
+			/// ESCONDE BOTAO ATUALIZA - E INICIA ATUALIZAÇÃO POR INTERVALO DOS CHATS ///
+			///////// ATRIBUI TAMBEM ID AO CONTAINER, PARA APLICAR ESTILOS CSS //////////
 			HTML o
 				<script>
 					var element = [...document.getElementsByClassName("row align-items-start justify-content-start")][0];
@@ -105,11 +110,11 @@
 					card.classList.add('borda_caixa_conv');
 
 					setInterval(() => {
-						atualiza.click();
+						atualizaChats.click();
 					}, 10000);
 				</script>
 			ENDTEXT	
-		
+			/////////////////////////////////////////////////////////////////////////////
 		ENDFORM o
 
 		oWeb:AddJs("files/js/table.js")

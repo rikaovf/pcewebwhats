@@ -96,8 +96,8 @@ html ::-webkit-scrollbar-track {
     margin: 0px 0px 0px;
 }
 
-.btn_envia{
-    margin: 0px 0px 0px;
+.btn_envia{    
+    margin: 0px 0px 0px 0px;
     box-shadow: 0 0 0 0;
     border: 0 none;
     outline: 0;
@@ -128,8 +128,9 @@ textarea:focus, input:focus, select:focus {
     outline: 0;
 }
 
-#btn_envia_svg{
-    font-size: 2em;
+#btn_enviar_svg{
+    margin:0px -1rem 0px 0px;
+    font-size: 1.5em;
     margin-right: -1rem
 }
 
