@@ -1,4 +1,3 @@
-
 document.addEventListener('keyup', function(event) {
 
     if (event.key === 'Escape') {
@@ -38,6 +37,21 @@ function _CorSituacao( cell, formatterParams, onRendered ) {
 
 
 function abrirConversa(msgs){
+    var elementoContato = document.getElementById('contato');
+        
+    if (usuarioClicou && elementoContato != undefined){
+        if(elementoContato.dataset.num != nWhatsapp){
+            timeoutMsgAtualiza.map((instancia)=>{
+                clearTimeout(instancia);
+            })        
+            
+            atualiza = false;
+            clicouMesmaConversa = false;
+        } else{
+            clicouMesmaConversa = true;
+        }
+    }
+
     setTimeout(()=>{
         carregaConversa(msgs);
     }, "300")
@@ -52,12 +66,14 @@ function carregaConversa(msgs){
     
     var arrMsgs = msgs[0];
 
-    carregaConversaSelecionada(arrMsgs);
+    if(!clicouMesmaConversa){
+        carregaConversaSelecionada(arrMsgs);
 
-    setTimeout(() => {
-        clicaNaConversaAtualiza();        
-    }, 8000);
-    
+        timeoutMsgAtualiza.push(setTimeout(() => {
+                                    clicaNaConversaAtualiza();        
+                                }, 8000));
+        }
+        
     return true;
 }
 
@@ -67,17 +83,12 @@ function carregaConversa(msgs){
 
 function clicaNaConversaAtualiza(){
     let chats = [...[...document.getElementsByClassName('tabulator-table')][0].childNodes]
-    console.log("clicou");
+
     chats.every((chat)=>{
         if(chat.childNodes[2].innerText == nWhatsapp){
             atualiza = true;
             chat.click();
-            
-            try{
-                document.querySelector('#texto_input').focus();
-            } catch(e){
-                console.log(e);
-            }
+            console.log('clicou');
             
             return false;
         } else{
@@ -114,7 +125,7 @@ function carregaConversaSelecionada(arrMsgs){
 
         ////////// DIV CONTATO PAI
         var contatoPai = criaElementoDom('div',
-                                         [['id', 'contato']],
+                                         [['id', 'contato'], ['data-num', rowData.N_WHATSAPP]],
                                          ['contato', 'borda_caixa_conv', 'col-12'],
                                          convPai,
                                          'beforeend');
@@ -128,7 +139,8 @@ function carregaConversaSelecionada(arrMsgs){
                                                 ['contato-foto'],
                                                 contatoPai,
                                                 'beforeend');
-                                                
+        
+                                                console.log(rowData.CHAVE_CLI);
         var identificacaoContato = criaElementoDom('div',
                                                    [['id', 'contato-nome']],
                                                    ['contato-nome'],
@@ -222,20 +234,15 @@ function carregaConversaSelecionada(arrMsgs){
 
 
 function insereMensagemDom(msg, divMensagens){
-    let mensagem = document.createElement("p");
+    let classmsg = ['msg', 'row', 'col-7', 'm-1', 'rounded', 'shadow-sm', 'p-2', 'mb-2'];
                 
-    mensagem.classList.add('msg', 'row', 'col-7', 'm-1', 'rounded', 'shadow-sm', 'p-2', 'mb-2');
-
     if (msg.st == "S"){
-        mensagem.classList.add('text-end', 'text-black', 'bg-success');
+        classmsg.push('text-end', 'text-black', 'bg-success');
     } else{
-        mensagem.classList.add('text-start', 'text-black', 'bg-light');
+        classmsg.push('text-start', 'text-black', 'bg-light');
     }        
 
-    mensagem.setAttribute("data-id", msg.msg_id);
-    mensagem.innerText = msg.text;
-
-    divMensagens.insertAdjacentElement("beforeend", mensagem);                
+    criaElementoDom('p', [['data-id', msg.msg_id]], classmsg, divMensagens, 'beforeend', msg.text);
 
     return;
 }
@@ -269,7 +276,7 @@ function EnviaMensagem(){
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(body) };
         
-        fetch("http://10.10.10.105:3000/sendmsg", options)
+        fetch(config.server + ':' + config.port + '/sendmsg', options)
         .then(() => {
             console.log("Mensagem enviada para " + body.id)
         })
@@ -289,8 +296,6 @@ function EnviaMensagem(){
 function fechaConversa(){
     var conv = document.getElementById('conversa_pai');
     
-    atualiza = false;
-
     if(conv != null){
         children = [...element.children]
         children[0].classList.remove('col-5')
@@ -299,6 +304,8 @@ function fechaConversa(){
         element.removeChild(conv);
         
         nWhatsapp = '';
+        usuarioClicou = false;
+        atualiza = false;
     }
 }
 

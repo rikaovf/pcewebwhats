@@ -48,9 +48,11 @@
 					var phone = '';
 					var port = '';
 					var idRetag = '';
-					var phoneEmpty = 'true';
 					var config = {};
+					var phoneEmpty = true;
 					var atualiza = false;
+					var clicouMesmaConversa = false;    
+					var timeoutMsgAtualiza = [];
 					var atualizaChats = document.getElementById("brw_whats-atualiza_chats");
 
 					setTimeout(() => {

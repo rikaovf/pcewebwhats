@@ -70,7 +70,8 @@ html ::-webkit-scrollbar-track {
 }
 
 .msg{
-    width: max-content;
+    max-width: max-content;
+    contain: content;
 }
 
 .borda_caixa_conv{

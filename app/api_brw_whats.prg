@@ -11,7 +11,7 @@ function Api_Brw_whats( oDom )
 	do case
 		case oDom:GetProc() == 'setdatawhats'
 			SetDataWhats( oDom )						
-		case oDom:GetProc() == 'abreconversa'// .or. oDom:GetProc() == 'atualizamsgs'
+		case oDom:GetProc() == 'abreconversa'
 			SetMsgWhats( oDom )
 		case oDom:GetProc() == 'encerrar_sessao'            
 			USessionEnd()
@@ -158,7 +158,7 @@ try
 	hUpdated := if (empty(hBrowse['selected']), '', hBrowse['selected'][1])
 
 	if hUpdated == nil .or. empty(hUpdated)
-		oDom:SetJs('clicaNaConversaAtualiza', {.T.})
+		oDom:SetJs('clicaNaConversaAtualiza')
 		Throw( ErrorNew( "Erro de mensagens", 0, 0, "Forced Error", "Erro ao carregar mensagens." ) )
 	endif
 catch
