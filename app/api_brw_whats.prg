@@ -156,7 +156,7 @@ endif
 try
 	hBrowse 	:= oDom:Get( 'tablewhats' )
 	hUpdated := if (empty(hBrowse['selected']), '', hBrowse['selected'][1])
-
+	
 	if hUpdated == nil .or. empty(hUpdated)
 		oDom:SetJs('clicaNaConversaAtualiza')
 		Throw( ErrorNew( "Erro de mensagens", 0, 0, "Forced Error", "Erro ao carregar mensagens." ) )

@@ -37,22 +37,27 @@ function _CorSituacao( cell, formatterParams, onRendered ) {
 
 
 function abrirConversa(msgs){
-    var elementoContato = document.getElementById('contato');
-        
-    if (usuarioClicou && elementoContato != undefined){
-        if(elementoContato.dataset.num != nWhatsapp){
-            timeoutMsgAtualiza.map((instancia)=>{
-                clearTimeout(instancia);
-            })        
-            
-            atualiza = false;
-            clicouMesmaConversa = false;
-        } else{
-            clicouMesmaConversa = true;
-        }
-    }
-
+    // o certo é trocar por promise estes timeout, desenvolvimento futuro.
     setTimeout(()=>{
+        var elementoContato = document.getElementById('contato');
+        var existeConversaAberta = elementoContato != undefined     
+        
+        if (usuarioClicou && existeConversaAberta){
+            if(elementoContato.dataset.num != nWhatsapp){
+                timeoutMsgAtualiza.map((instancia)=>{
+                    clearTimeout(instancia);
+                })        
+                
+                atualiza = false;
+                clicouMesmaConversa = false;
+            } else{
+                clicouMesmaConversa = true;
+            }
+        } else if(!usuarioClicou && existeConversaAberta && elementoContato.dataset.num == nWhatsapp){
+            atualiza = true;
+            clicouMesmaConversa = false;
+        }
+
         carregaConversa(msgs);
     }, "300")
 }
@@ -87,8 +92,8 @@ function clicaNaConversaAtualiza(){
     chats.every((chat)=>{
         if(chat.childNodes[2].innerText == nWhatsapp){
             atualiza = true;
+            console.log(chat);
             chat.click();
-            console.log('clicou');
             
             return false;
         } else{
@@ -140,7 +145,7 @@ function carregaConversaSelecionada(arrMsgs){
                                                 contatoPai,
                                                 'beforeend');
         
-                                                console.log(rowData.CHAVE_CLI);
+                                                
         var identificacaoContato = criaElementoDom('div',
                                                    [['id', 'contato-nome']],
                                                    ['contato-nome'],
