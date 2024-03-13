@@ -12,7 +12,8 @@
 		oWeb:AddCss("https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css")
 		oWeb:AddCss("files/css/whats.css")
 		oWeb:AddCss("files/css/loader.css")	
-		oWeb:AddJs("files/js/whats.js")
+		oWeb:AddJs("files/js/whatsapi.js")
+		oWeb:AddJs("files/js/rowformatter.js")
 	
 		DEFINE FORM o ID 'brw_whats' API 'api_brw_whats' OF oWeb 
 		
@@ -38,7 +39,7 @@
 
 
 			/////// BOTAO GENERICO PARA ATUALIZAR OS CHATS - APOS INICIO FICA HIDDEN //////
-			BUTTON ID 'atualiza_chats' LABEL '' ACTION 'setdatawhats' GRID 1 OF o
+			BUTTON ID 'atualiza_chats' LABEL '' ACTION 'setdatawhatsapi' GRID 1 OF o
 			///////////////////////////////////////////////////////////////////////////////
 			
 
@@ -74,13 +75,9 @@
 			ROW o VALIGN 'top'
 				COL o CLASS 's-0' GRID 11
 
-					aOptions := { ;
-						'index' => 'id',;
-						'maxHeight' => '85vh',;
-						'selectable' => 1;
-					}
+					aOptions := { 'index' => 'id', 'maxHeight' => '85vh' }
 					
-					aEvents := { { 'name' => 'rowClick' , 'proc' => 'abreconversa'} }
+					aEvents := { { 'name' => 'rowClick' , 'proc' => 'infocliente'} }
 					
 					DEFINE BROWSE oBrw ID 'tablewhats' OPTIONS aOptions EVENTS aEvents OF o 
 						COL oCol TO oBrw CONFIG { 'title' => "Nome", 'field' => "CHAVE_CLI", 'width' => 200 }
@@ -119,7 +116,7 @@
 			/////////////////////////////////////////////////////////////////////////////
 		ENDFORM o
 
-		oWeb:AddJs("files/js/table.js")
+		oWeb:AddJs("files/js/tableapi.js")
 	
 		INIT WEB oWeb RETURN
 ?>

@@ -7,10 +7,12 @@ function Api_Brw_whats( oDom )
     endif
 
     do case
-        case oDom:GetProc() == "setdatawhats"
-            SetDataWhats( oDom )
-        case oDom:GetProc() == "abreconversa"
-            SetMsgWhats( oDom )
+
+
+        case oDom:GetProc() == "infocliente"
+            infoCliente( oDom )
+        case oDom:GetProc() == "setdatawhatsapi"
+            SetDataWhatsApi( oDom )
         case oDom:GetProc() == "encerrar_sessao"
             USessionEnd()
             URedirect("/")
@@ -26,7 +28,197 @@ retu oDom:Send()
 
 
 
-static function SetDataWhats( oDom )
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+static function SetDataWhatsApi( oDom )
 
     local aRows := {}
 
@@ -91,6 +283,7 @@ function GetRows( cAlias, nRecno, nTotal, oDom )
 
         HB_HSet( aReg, "id"     , n )
         HB_HSet( aReg, "_recno"     , (cAlias)->( Recno() ) )
+        HB_HSet( aReg, "id_serial"     , Alltrim((cAlias)->ID_SERIAL))
 
         for j := 1 to nFields
             do case
@@ -137,58 +330,5 @@ retu aRows
 
 
 
-function SetMsgWhats( oDom )
-
-local hBrowse, hUpdated, n
-local aMsgs := {}
-
-local aARQS := { { "ACE397.001",,, "ICE39702" } }
-
-
-if ! abre_fecha_arquivos(aArqs, .T.)
-    abre_fecha_arquivos(aArqs, .F.)
-    return nil
-endif
-
-
-BEGIN SEQUENCE WITH __BreakBlock()
-    hBrowse     := oDom:Get( "tablewhats" )
-    hUpdated := if (empty(hBrowse["selected"]), "", hBrowse["selected"][1])
-
-    if hUpdated == nil .OR. empty(hUpdated)
-        oDom:SetJs("clicaNaConversaAtualiza")
-        Throw( ErrorNew( "Erro de mensagens", 0, 0, "Forced Error", "Erro ao carregar mensagens." ) )
-    endif
-RECOVER
-
-
-    return nil
-end
-
-
-
-ace397 -> ( SetScope(0, Padl(hUpdated["ID_RETAG"], 11)) )
-ace397 -> ( SetScope(1, Padl(hUpdated["ID_RETAG"], 11)) )
-
-ace397 -> ( DbGoTop() )
-
-n := 0
-
-while ! ace397->(eof())
-
-
-
-
-
-
-
-    Aadd( aMsgs,  { "id" => alltrim(str(n++)), "st" => ace397->st, "media_type" => ace397->media_type,    "text" => ace397->text,    "data" => ace397->data,    "hora" => ace397->hora,    "resposta" => ace397->resposta,    "msg_id" => ace397->msg_id }    )
-
-    ace397->(DbSkip())
-enddo
-
-oDom:SetJs("abrirConversa", { aMsgs } )
-
-abre_fecha_arquivos(aArqs, .F.)
-
+function infoCliente()
 return nil

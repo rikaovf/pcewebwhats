@@ -74,6 +74,11 @@ html ::-webkit-scrollbar-track {
     contain: content;
 }
 
+.imgMsg{
+    width: 200px;
+    height: 200px;
+}
+
 .borda_caixa_conv{
     border-style: groove;
     border-color: rgb(213, 206, 206);

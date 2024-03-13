@@ -92,7 +92,6 @@ function clicaNaConversaAtualiza(){
     chats.every((chat)=>{
         if(chat.childNodes[2].innerText == nWhatsapp){
             atualiza = true;
-            console.log(chat);
             chat.click();
             
             return false;
@@ -102,6 +101,7 @@ function clicaNaConversaAtualiza(){
 
         return true;
     })
+
 }
 
 
@@ -228,7 +228,7 @@ function carregaConversaSelecionada(arrMsgs){
     }
 
     conversa.scrollTo( { top: 1000000000, behavior: "smooth" } );
-
+    
     return;
 }
 

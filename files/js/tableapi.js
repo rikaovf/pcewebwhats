@@ -1,9 +1,7 @@
 var rowData = {};
-var nWhatsapp = '';
-var usuarioClicou = false;
+var intervaloAtualiza = 0;
 
 var table = Tabulator.findTable('#brw_whats-tablewhats')[0]
-var textAreaMsg = document.getElementById("texto_input");
 
 const carregouTable = setInterval(() => {
     if(table == undefined){
@@ -43,12 +41,18 @@ const carregouTable = setInterval(() => {
             }
         }, 500);
 
-        
-        
         table.on("rowClick", function(e, row){
-            usuarioClicou = e.isTrusted;
-            rowData = row.getData();
-            nWhatsapp = rowData.N_WHATSAPP;
+            if(rowData.length == 0){
+                rowData = row.getData();
+                abreMensagens();
+            } else{
+                var auxData = row.getData();
+                if(rowData.id_serial != auxData.id_serial){
+                    rowData = auxData;
+                    clearInterval(intervaloAtualiza);
+                    abreMensagens();
+                }
+            }
         });
     }
 }, 1000);
