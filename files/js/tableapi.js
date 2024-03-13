@@ -50,6 +50,7 @@ const carregouTable = setInterval(() => {
                 if(rowData.id_serial != auxData.id_serial){
                     rowData = auxData;
                     clearInterval(intervaloAtualiza);
+                    removeModals();
                     abreMensagens();
                 }
             }

@@ -26,7 +26,7 @@ function abreMensagens(){
         .then((res) => {
             return res.json();
         })
-        .then(msgs =>{
+        .then((msgs) =>{
             console.log(msgs);
             montaChat(msgs);
             intervaloAtualiza = setInterval(()=>{
@@ -178,22 +178,31 @@ function insereMensagemDom(msg, divMensagens){
         } else{
             classmsg.push('text-start', 'text-black', 'bg-light');
         }        
-
+        
         if(msg.type == 'chat'){
             criaElementoDom('p', [['data-id', msg.id.id]], classmsg, divMensagens, 'beforeend', msg.body);
         } else{
             switch(msg.type){
-                case "image":
+                case 'image':
                     classmsg.push('imgMsg');
                     criaElementoDom('img', [['data-id', msg.id.id], ['id', idSerialized], ['src', '']], classmsg, divMensagens, 'beforeend', msg.body);
-                    //criaElementoDom(tipo, atributos, classes, elementoInsert, posicaoInsert, conteudoElm)
-                    downloadInsereMedia(idSerialized)
-                case "ptt":
-                    //retornaMedia()
-                case "document":
-                    //retornaMedia()
-                case "sticker":
-                    //retornaMedia()
+                    downloadInsereMedia(idSerialized, msg.type)
+                    break;
+                case 'ptt':
+                    classmsg.push('audioMsg', 'bi', 'bi-play-circle-fill');
+                    criaElementoDom('p', [['data-id', msg.id.id], ['id', idSerialized]], classmsg, divMensagens, 'beforeend', msg.body);
+                    break;
+                case 'document':
+                    classmsg.push('docMsg', 'bi', 'bi-filetype-pdf');
+                    criaElementoDom('p', [['data-id', msg.id.id], ['id', idSerialized]], classmsg, divMensagens, 'beforeend', msg.body);
+                    break;
+                case 'sticker':
+                    classmsg.push('stickerMsg');
+                    criaElementoDom('img', [['data-id', msg.id.id], ['id', idSerialized], ['src', '']], classmsg, divMensagens, 'beforeend', msg.body);
+                    downloadInsereMedia(idSerialized, msg.type);
+                    break;
+                default:
+                    console.log('Tipo não suportado:\nid: ' + msg.id.id + '\ntype: ' + msg.type);
             }
         }
     }
@@ -293,6 +302,7 @@ function fechaConversa(){
         element.removeChild(conv);
         rowData = {};
         clearInterval(intervaloAtualiza);
+        removeModals();
     }
 }
 
@@ -323,7 +333,7 @@ function atualizaMensagens(){
                 }
             }
 
-            divConversa.scrollTo( { top: 1000000000, behavior: "smooth" } );
+            //divConversa.scrollTo( { top: 1000000000, behavior: "smooth" } );
         })
         .catch((err) => {
             console.log(err);
@@ -335,7 +345,7 @@ function atualizaMensagens(){
 
 
 
-function downloadInsereMedia(idSerial){
+function downloadInsereMedia(idSerial, tipo){
 
 var promiseDownload = new Promise((resolve, reject)=>{
     fetch(config.server + ':' + config.port + '/getmsgbyid/?id=' + idSerial)
@@ -349,7 +359,16 @@ var promiseDownload = new Promise((resolve, reject)=>{
                 
                 if(elementoMedia != undefined){
                     var imagem = 'data:' + media.mimetype + ';base64,' + media.data;
+                    
                     elementoMedia.setAttribute('src', imagem);
+                    
+                    if(tipo == 'image'){
+                        elementoMedia.addEventListener('click',()=>{
+                            abreImagem(elementoMedia, idSerial);
+                        })
+                        //addModalImg(elementoMedia, idSerial);
+                    }
+
                 } else throw  new Error('Mensagem não encontrada!');
                 
                 return(media);
@@ -360,4 +379,56 @@ var promiseDownload = new Promise((resolve, reject)=>{
             });
 });
 
+}
+
+
+function abreImagem(elementoImg, idSerial){
+    var dialogImg = criaElementoDom('dialog', [['id', idSerial+'dlg'],['open', '']], ['dialogImg'], document.querySelector('body'), 'beforeend');
+    var imagemAbrir = document.createElement('img');
+
+    imagemAbrir.setAttribute('src', elementoImg.src);
+    imagemAbrir.classList.add('imgDialogAberto');
+    dialogImg.insertAdjacentElement('afterbegin', imagemAbrir);
+
+    dialogImg.addEventListener('click', ()=>{
+        dialogImg.close();
+        removeModals();
+    })
+}
+
+
+/*function addModalImg(elementoImg, idSerial){
+    var dialogImg = criaElementoDom('dialog', [['id', idSerial+'dlg'], ['hidden', 'true']], ['dialogImg'], document.querySelector('body'), 'beforeend');
+    var imagemAbrir = document.createElement('img');
+
+    imagemAbrir.setAttribute('src', elementoImg.src);
+    imagemAbrir.classList.add('imgDialogAberto');
+    dialogImg.insertAdjacentElement('afterbegin', imagemAbrir);
+
+    elementoImg.addEventListener('click', ()=>{
+        dialogImg.showModal();
+    })
+
+    dialogImg.addEventListener('click', ()=>{
+        dialogImg.close();
+    })
+}*/
+
+
+
+
+
+
+
+function removeModals(){
+    var bodyElement = document.querySelector('body');
+    var modalElements = [...document.querySelectorAll('dialog')];
+
+    
+    if(modalElements.length > 0){
+        modalElements.map((modal)=>{
+            bodyElement.removeChild(modal);
+        })
+    }
+    
 }
