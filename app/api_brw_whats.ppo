@@ -311,7 +311,7 @@ function GetRows( cAlias, nRecno, nTotal, oDom )
                 case (cAlias)->( FieldName( j ) ) == "CHAVE_CLI"
                     HB_HSet( aReg, (cAlias)->( FieldName( j ) ), retornaNomeCliente( , (cAlias)->( FieldGet( j ) ) ) )
                 case (cAlias)->( FieldName( j ) ) == "DATA"
-                    HB_HSet( aReg, (cAlias)->( FieldName( j ) ), DTOC( STOD( (cAlias)->( FieldGet( j ) ) ) ) )
+                    HB_HSet( aReg, (cAlias)->( FieldName( j ) ), STRTRAN(DTOC( STOD( (cAlias)->( FieldGet( j ) ) ) ), "-", "/" ) )
                 case (cAlias)->( FieldName( j ) ) == "FUNC_ABERT"
                     HB_HSet( aReg, (cAlias)->( FieldName( j ) ), (cAlias)->( FieldGet( j ) ) + "-" + CodToDes( "F" + (cAlias)->( FieldGet( j ) ), "ace004.001", "ICE004", "TAB_DES" ) )
             endcase

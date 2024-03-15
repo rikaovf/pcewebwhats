@@ -75,17 +75,19 @@
 			ROW o VALIGN 'top'
 				COL o CLASS 's-0' GRID 11
 
-					aOptions := { 'index' => 'id', 'maxHeight' => '85vh' }
+					aOptions := { 'index' => 'id',;
+								  'maxHeight' => '85vh',;
+								  'columnHeaderSortMulti' => .F. }
 					
 					aEvents := { { 'name' => 'rowClick' , 'proc' => 'infocliente'} }
 					
 					DEFINE BROWSE oBrw ID 'tablewhats' OPTIONS aOptions EVENTS aEvents OF o 
-						COL oCol TO oBrw CONFIG { 'title' => "Nome", 'field' => "CHAVE_CLI", 'width' => 200 }
-						COL oCol TO oBrw CONFIG { 'title' => "Telefone", 'field' => "N_WHATSAPP", 'width' => 200 }
+						COL oCol TO oBrw CONFIG { 'title' => "Nome", 'field' => "CHAVE_CLI", 'width' => 200, 'headerFilter' => .T., 'headerSort' => .F. }
+						COL oCol TO oBrw CONFIG { 'title' => "Telefone", 'field' => "N_WHATSAPP", 'width' => 200, 'headerFilter' => .T., 'headerSort' => .F. }
 						COL oCol TO oBrw CONFIG { 'title' => "Situação", 'field' => "SITUACAO", 'formatter' => '_CorSituacao' }
-						COL oCol TO oBrw CONFIG { 'title' => "Data", 'field' => "DATA" }
-						COL oCol TO oBrw CONFIG { 'title' => "Hora", 'field' => "HORA" }
-						COL oCol TO oBrw CONFIG { 'title' => "Funcionário", 'field' => "FUNC_ABERT", 'width' => 1000 }
+						COL oCol TO oBrw CONFIG { 'title' => "Data", 'field' => "DATA", 'headerSort' => .F. }
+						COL oCol TO oBrw CONFIG { 'title' => "Hora", 'field' => "HORA", 'headerSort' => .F. }
+						COL oCol TO oBrw CONFIG { 'title' => "Funcionário", 'field' => "FUNC_ABERT", 'width' => 1000, 'headerSort' => .F. }
 					INIT BROWSE oBrw 
 				ENDCOL o			
 			ENDROW o		
@@ -97,8 +99,6 @@
 			HTML o
 				<script>
 					var element = [...document.getElementsByClassName("row align-items-start justify-content-start")][0];
-					var card = [...document.getElementsByClassName("card")][0];
-					
 					var brwWhats = document.getElementById("brw_whats");
 
 					element.setAttribute("style", "visibility:hidden;")
@@ -106,7 +106,6 @@
 					
 					
 					brwWhats.classList.add('col-12');
-					card.classList.add('borda_caixa_conv');
 
 					setInterval(() => {
 						atualizaChats.click();

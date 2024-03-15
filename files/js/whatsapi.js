@@ -22,7 +22,7 @@ function abreMensagens(){
     if(phone.trim().length === 0 || port.trim().length === 0){
         alert("Há inconsistências na configuração do servidor whatsapp. Phone ou porta vazios!");
     } else{
-        fetch(config.server + ':' + config.port + '/getmsgfromchat/?id=' + rowData.id_serial)
+        fetch(`${config.server}:${config.port}/getmsgfromchat/?id=${rowData.id_serial}`)
         .then((res) => {
             return res.json();
         })
@@ -176,7 +176,12 @@ function insereMensagemDom(msg, divMensagens){
         if (msg.fromMe){
             classmsg.push('text-end', 'text-black', 'bg-success');
         } else{
-            classmsg.push('text-start', 'text-black', 'bg-light');
+            if(msg.type == 'ciphertext'){
+                msg.body = 'Falha ao descriptografar mensagem. Conferir no aparelho!'
+                classmsg.push('text-start', 'text-black', 'bg-danger');
+            }else{
+                classmsg.push('text-start', 'text-black', 'bg-light');
+            }
         }        
         
         if(msg.type == 'chat'){
@@ -187,19 +192,31 @@ function insereMensagemDom(msg, divMensagens){
                     classmsg.push('imgMsg');
                     criaElementoDom('img', [['data-id', msg.id.id], ['id', idSerialized], ['src', '']], classmsg, divMensagens, 'beforeend', msg.body);
                     downloadInsereMedia(idSerialized, msg.type)
+                    
                     break;
                 case 'ptt':
-                    classmsg.push('audioMsg', 'bi', 'bi-play-circle-fill');
-                    criaElementoDom('p', [['data-id', msg.id.id], ['id', idSerialized]], classmsg, divMensagens, 'beforeend', msg.body);
+                    classmsg.push('audioMsg');
+                    var audioElement = criaElementoDom('p', [['data-id', msg.id.id], ['id', idSerialized]], classmsg, divMensagens, 'beforeend');
+                    var audio = criaElementoDom('audio', [['src', ''], ['controls', '']], [], audioElement, 'beforeend');
+                    carregaAudio(audio, idSerialized);
+                    
                     break;
                 case 'document':
-                    classmsg.push('docMsg', 'bi', 'bi-filetype-pdf');
-                    criaElementoDom('p', [['data-id', msg.id.id], ['id', idSerialized]], classmsg, divMensagens, 'beforeend', msg.body);
+                    classmsg.push('docMsg', 'bi', msg._data.mimetype == 'application/pdf' ? 'bi-filetype-pdf' : 'bi-file-earmark-word');
+                    var docElement = criaElementoDom('a', [['data-id', msg.id.id], ['id', idSerialized]], classmsg, divMensagens, 'beforeend', msg.body);
+                    downloadDoc(idSerialized, docElement, msg._data.caption, msg.fromMe);
+                    
                     break;
                 case 'sticker':
                     classmsg.push('stickerMsg');
                     criaElementoDom('img', [['data-id', msg.id.id], ['id', idSerialized], ['src', '']], classmsg, divMensagens, 'beforeend', msg.body);
                     downloadInsereMedia(idSerialized, msg.type);
+                    
+                    break;
+                case 'ciphertext':
+                    classmsg.push('cipherText');
+                    criaElementoDom('p', [['data-id', msg.id.id]], classmsg, divMensagens, 'beforeend', msg.body);
+                    
                     break;
                 default:
                     console.log('Tipo não suportado:\nid: ' + msg.id.id + '\ntype: ' + msg.type);
@@ -237,7 +254,7 @@ function EnviaMensagem(){
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(body) };
         
-        fetch(config.server + ':' + config.port + '/sendmsg', options)
+            fetch(`${config.server}:${config.port}/sendmsg`, options)
         .then(() => {
             console.log("Mensagem enviada para " + body.id);
         })
@@ -315,7 +332,7 @@ function atualizaMensagens(){
 
     var divConversa = document.getElementById('conversa');
     
-    fetch(config.server + ':' + config.port + '/getmsgfromchat/?id=' + rowData.id_serial)
+    fetch(`${config.server}:${config.port}/getmsgfromchat/?id=${rowData.id_serial}`)
         .then((res) => {
             return res.json();
         })
@@ -347,72 +364,103 @@ function atualizaMensagens(){
 
 function downloadInsereMedia(idSerial, tipo){
 
-var promiseDownload = new Promise((resolve, reject)=>{
-    fetch(config.server + ':' + config.port + '/getmsgbyid/?id=' + idSerial)
-            .then((res) => {
-                return res.json();
-            })
-            .then((media) => {
-                if(media.length == 0) throw new Error('Erro ao baixar media');
-                
-                var elementoMedia = document.getElementById(idSerial);
-                
-                if(elementoMedia != undefined){
-                    var imagem = 'data:' + media.mimetype + ';base64,' + media.data;
-                    
-                    elementoMedia.setAttribute('src', imagem);
-                    
-                    if(tipo == 'image'){
-                        elementoMedia.addEventListener('click',()=>{
-                            abreImagem(elementoMedia, idSerial);
-                        })
-                        //addModalImg(elementoMedia, idSerial);
-                    }
 
-                } else throw  new Error('Mensagem não encontrada!');
-                
-                return(media);
-            })
-            .catch((err) => {
-                // insere uma imagem de um 'x'
-                return(err);
-            });
+    fetch(`${config.server}:${config.port}/getmsgbyid/?id=${idSerial}`)
+    .then((res) => {
+        return res.json();
+    })
+    .then((media) => {
+        if(media.length == 0) throw new Error('Erro ao baixar media');
+        
+        var elementoMedia = document.getElementById(idSerial);
+        
+        if(elementoMedia != undefined){
+            var imagem = 'data:' + media.mimetype + ';base64,' + media.data;
+            
+            elementoMedia.setAttribute('src', imagem);
+            
+            if(tipo == 'image'){
+                addModalImg(elementoMedia, idSerial);
+            }
+
+        } else throw  new Error('Mensagem não encontrada!');
+        
+        return(media);
+    })
+    .catch((err) => {
+        // insere uma imagem de um 'x'
+        return(err);
+    });
+}
+
+
+
+
+
+function addModalImg(elementoImg, idSerial){
+    var dialogImg = criaElementoDom('dialog', [['id', idSerial+'dlg']], ['dialogImg'], document.querySelector('body'), 'beforeend');
+    var imagemAbrir = criaElementoDom('img', [['src', elementoImg.src]], ['imgDialogAberto'], dialogImg, 'afterbegin');
+
+    elementoImg.addEventListener('click', ()=>{
+        dialogImg.style.display = 'block';
+    })
+
+    dialogImg.addEventListener('click', ()=>{
+        dialogImg.style.display = 'none';
+    })
+}
+
+
+
+
+
+function downloadDoc(idSerialized, docElement, filename, fromMe){
+
+fetch(`${config.server}:${config.port}/getmsgbyid/?id=${idSerialized}`)
+.then((res) => {
+    return res.json();
+})
+.then((media) => {
+    if(media.length == 0) throw new Error('Erro ao baixar media');
+
+    var doc = 'data:' + media.mimetype + ';base64,' + media.data;
+
+    docElement.setAttribute('download', filename);
+    docElement.setAttribute('href', doc);
+    
+    docElement.style.color = fromMe ? '#ffffff' : '#000000';
+})
+.catch((err) => {
+    // insere uma imagem de um 'x'
+    return(err);
 });
 
 }
 
 
-function abreImagem(elementoImg, idSerial){
-    var dialogImg = criaElementoDom('dialog', [['id', idSerial+'dlg'],['open', '']], ['dialogImg'], document.querySelector('body'), 'beforeend');
-    var imagemAbrir = document.createElement('img');
 
-    imagemAbrir.setAttribute('src', elementoImg.src);
-    imagemAbrir.classList.add('imgDialogAberto');
-    dialogImg.insertAdjacentElement('afterbegin', imagemAbrir);
 
-    dialogImg.addEventListener('click', ()=>{
-        dialogImg.close();
-        removeModals();
+
+function carregaAudio(audioElement, idSerialized){
+    fetch(`${config.server}:${config.port}/getmsgbyid/?id=${idSerialized}`)
+    .then((res) => {
+        return res.json();
     })
+    .then((media) => {
+        if(media.length == 0) throw new Error('Erro ao baixar media');
+
+        var audio = 'data:' + media.mimetype + ';base64,' + media.data;
+
+        audioElement.setAttribute('src', audio);
+    })
+    .catch((err) => {
+        // insere uma imagem de um 'x'
+        return(err);
+    });
 }
 
 
-/*function addModalImg(elementoImg, idSerial){
-    var dialogImg = criaElementoDom('dialog', [['id', idSerial+'dlg'], ['hidden', 'true']], ['dialogImg'], document.querySelector('body'), 'beforeend');
-    var imagemAbrir = document.createElement('img');
 
-    imagemAbrir.setAttribute('src', elementoImg.src);
-    imagemAbrir.classList.add('imgDialogAberto');
-    dialogImg.insertAdjacentElement('afterbegin', imagemAbrir);
-
-    elementoImg.addEventListener('click', ()=>{
-        dialogImg.showModal();
-    })
-
-    dialogImg.addEventListener('click', ()=>{
-        dialogImg.close();
-    })
-}*/
 
 
 
@@ -432,3 +480,8 @@ function removeModals(){
     }
     
 }
+
+
+
+
+
