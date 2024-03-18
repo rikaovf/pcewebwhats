@@ -42,6 +42,11 @@ procedure PILHA();return
 procedure SCRSAVE();return
 procedure LOG_DE_EVENTOS();return
 procedure SCRREST();return
+procedure BEEP();return
+procedure NC_SHIFT();return
+procedure APAGALIXO();return
+procedure REDE_WINDOWS_VERIFICA_CONFIGURACAO();return
+                        
 
 
                 

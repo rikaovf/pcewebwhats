@@ -80,11 +80,21 @@ function montaChat(msgs){
     
                                             
     var identificacaoContato = criaElementoDom('div',
-                                                [['id', 'contato-nome']],
-                                                ['contato-nome'],
-                                                contatoPai,
-                                                'beforeend',
-                                                rowData.CHAVE_CLI);
+                                               [['id', 'contato-nome']],
+                                               ['contato-nome'],
+                                               contatoPai,
+                                               'beforeend',
+                                               rowData.CHAVE_CLI);
+
+    
+    var orcamentosContato = criaElementoDom('button',
+                                            [['id', 'contato-orcs'], ['data-live', ""], ['data-onclick','testeorca']],
+                                            ['contato-orcs', 'bi', 'bi-list-ul'],
+                                            contatoPai,
+                                            'beforeend');
+
+                                             
+
     //////////
 
 

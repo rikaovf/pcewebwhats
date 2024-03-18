@@ -84,7 +84,7 @@
 					DEFINE BROWSE oBrw ID 'tablewhats' OPTIONS aOptions EVENTS aEvents OF o 
 						COL oCol TO oBrw CONFIG { 'title' => "Nome", 'field' => "CHAVE_CLI", 'width' => 200, 'headerFilter' => .T., 'headerSort' => .F. }
 						COL oCol TO oBrw CONFIG { 'title' => "Telefone", 'field' => "N_WHATSAPP", 'width' => 200, 'headerFilter' => .T., 'headerSort' => .F. }
-						COL oCol TO oBrw CONFIG { 'title' => "Situação", 'field' => "SITUACAO", 'formatter' => '_CorSituacao' }
+						COL oCol TO oBrw CONFIG { 'title' => "Situação", 'field' => "SITUACAO", 'formatter' => '_CorSituacao', 'headerSort' => .F. }
 						COL oCol TO oBrw CONFIG { 'title' => "Data", 'field' => "DATA", 'headerSort' => .F. }
 						COL oCol TO oBrw CONFIG { 'title' => "Hora", 'field' => "HORA", 'headerSort' => .F. }
 						COL oCol TO oBrw CONFIG { 'title' => "Funcionário", 'field' => "FUNC_ABERT", 'width' => 1000, 'headerSort' => .F. }

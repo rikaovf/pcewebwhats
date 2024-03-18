@@ -15,8 +15,7 @@
 
 
 body{
-    background-image: linear-gradient(rgb(233, 224, 224), white);
-    background-repeat: no-repeat;
+    background-color: #a7a7a7;
 }
 
 html ::-webkit-scrollbar {
@@ -33,15 +32,25 @@ html ::-webkit-scrollbar-track {
 
 }
 
+.container{
+    background-color: inherit;
+}
+
+.tabulator .tabulator-header {
+    background-color: #6c6c6c;
+    color: #fff;
+    font-weight: 400;
+    font-weight: 700;
+    border-top: none;
+}
 
 .tabulator .tabulator-header .tabulator-col {
     flex-wrap: wrap;
     align-content: space-around;
     border-right: none;
-    background-image: linear-gradient(180deg, black, #d3bebe);
+    background-color: #6c6c6c;
     color: lightgray;
-    font-size: 15px;
-    font-family: monospace;
+    font-family: system-ui;
 }
 
 .tabulator .tabulator-header .tabulator-header-contents {
@@ -55,15 +64,22 @@ html ::-webkit-scrollbar-track {
     height: 75vh;
 }
 
+.card{
+    background-color: #6c6c6c;
+    border: none;
+}
+
 .conversa_pai{
     height: 100%;    
 }
 
 .contato{
-    display:flex;
+    display: flex;
     flex-direction: row;
+    justify-content: space-between;
     height: 10%;
-    background-image: linear-gradient(225deg, grey, transparent);
+    color: #d3d3d3;
+    background-color: #6c6c6c !important;
 }
 
 .contato-nome{
@@ -73,11 +89,21 @@ html ::-webkit-scrollbar-track {
     flex-wrap: wrap;
     align-content: center;
     font-size: 1.5em;
-    text-shadow: lightgray 1px 1px;
 }
 
 .contato-foto{
     
+}
+
+.contato-orcs{
+    border: none;
+    background-color: inherit;
+    margin-left: 1rem;
+    display: flex;
+    flex-wrap: wrap;
+    align-content: center;
+    font-size: 1.5em;
+    color: #d3d3d3;
 }
 
 .conversa{
@@ -150,6 +176,7 @@ html ::-webkit-scrollbar-track {
 
 
 .borda_caixa_conv{
+    background-color: snow;
     border-style: groove;
     border-color: rgb(213, 206, 206);
     border-width: 2px;

@@ -15,6 +15,8 @@ function Api_Brw_whats( oDom )
 			infoCliente( oDom )
 		case oDom:GetProc() == 'setdatawhatsapi'
 			SetDataWhatsApi( oDom )						
+		case oDom:GetProc() == 'testeorca'
+			Teste( oDom )							
 		case oDom:GetProc() == 'encerrar_sessao'            
 			USessionEnd()
 			URedirect('/')
@@ -216,7 +218,9 @@ return nil
 /***********************************/
 
 
-
+function Teste( oDom )
+	oDom:Console('clicou')
+return nil
 
 
 
