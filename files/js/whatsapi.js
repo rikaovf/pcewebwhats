@@ -496,16 +496,21 @@ function removeModals(){
 
 
 
-
-
-
-
 function solicitaOrcApi(){
     var oPar = new Object();          
     
     oPar['idRetag'] = rowData.ID_RETAG;
 
     MsgApi('api_brw_whats', 'carregaorcamentos', oPar);
+    
+    return
+}
+
+
+
+
+function encerrarSessao(){
+    MsgApi('api_brw_whats', 'encerrar_sessao');
     
     return
 }

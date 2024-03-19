@@ -27,7 +27,7 @@
 			ENDTEXT
 			IF USessionReady()
 				HTML o
-					<button id="btn_sair" type="button" class="btn_sair" data-live="" data-onclick="encerrar_sessao" name="encerrar_sessao" value="">
+					<button id="btn_sair" type="button" class="btn_sair" onclick="encerrarSessao()">
 						<i id="btn_sair_svg" class="btn_sair_svg bi bi-power"></i>						
 					</button>
 				ENDTEXT		
@@ -48,12 +48,9 @@
 				<script>
 					var phone = '';
 					var port = '';
-					var idRetag = '';
 					var config = {};
 					var phoneEmpty = true;
 					var atualiza = false;
-					var clicouMesmaConversa = false;    
-					var timeoutMsgAtualiza = [];
 					var atualizaChats = document.getElementById("brw_whats-atualiza_chats");
 
 					setTimeout(() => {

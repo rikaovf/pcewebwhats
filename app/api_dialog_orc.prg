@@ -10,7 +10,7 @@ function api_dialog_orc( oDom )
 
 	do case
 		case oDom:GetProc() == '//'
-			SetDataWhatsApi( oDom )						
+			//SetDataWhatsApi( oDom )						
 		otherwise 				
 			oDom:SetError( "Proc don't defined => " + oDom:GetProc())
 	endcase
