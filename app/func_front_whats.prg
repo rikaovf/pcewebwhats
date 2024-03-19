@@ -270,3 +270,13 @@ FUNCTION ParametroWhatsApp( cCampo, cFilial, uDefault, uValor )
  
 
 
+
+
+
+
+
+
+
+
+
+ 

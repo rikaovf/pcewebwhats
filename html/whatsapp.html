@@ -79,9 +79,7 @@
 								  'maxHeight' => '85vh',;
 								  'columnHeaderSortMulti' => .F. }
 					
-					aEvents := { { 'name' => 'rowClick' , 'proc' => 'infocliente'} }
-					
-					DEFINE BROWSE oBrw ID 'tablewhats' OPTIONS aOptions EVENTS aEvents OF o 
+					DEFINE BROWSE oBrw ID 'tablewhats' OPTIONS aOptions OF o 
 						COL oCol TO oBrw CONFIG { 'title' => "Nome", 'field' => "CHAVE_CLI", 'width' => 200, 'headerFilter' => .T., 'headerSort' => .F. }
 						COL oCol TO oBrw CONFIG { 'title' => "Telefone", 'field' => "N_WHATSAPP", 'width' => 200, 'headerFilter' => .T., 'headerSort' => .F. }
 						COL oCol TO oBrw CONFIG { 'title' => "Situação", 'field' => "SITUACAO", 'formatter' => '_CorSituacao', 'headerSort' => .F. }

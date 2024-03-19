@@ -88,7 +88,7 @@ function montaChat(msgs){
 
     
     var orcamentosContato = criaElementoDom('button',
-                                            [['id', 'contato-orcs'], ['data-live', ""], ['data-onclick','testeorca']],
+                                            [['id', 'contato-orcs'], ['onclick', 'solicitaOrcApi()']],
                                             ['contato-orcs', 'bi', 'bi-list-ul'],
                                             contatoPai,
                                             'beforeend');
@@ -194,8 +194,8 @@ function insereMensagemDom(msg, divMensagens){
             }
         }        
         
-        if(msg.type == 'chat'){
-            criaElementoDom('p', [['data-id', msg.id.id]], classmsg, divMensagens, 'beforeend', msg.body);
+        if(msg.type == 'chat' || msg.type == 'revoked'){
+            criaElementoDom('p', [['data-id', msg.id.id]], classmsg, divMensagens, 'beforeend', msg.type == 'revoked' ? '🚫 Mensagem apagada' : msg.body);
         } else{
             switch(msg.type){
                 case 'image':
@@ -495,3 +495,17 @@ function removeModals(){
 
 
 
+
+
+
+
+
+function solicitaOrcApi(){
+    var oPar = new Object();          
+    
+    oPar['idRetag'] = rowData.ID_RETAG;
+
+    MsgApi('api_brw_whats', 'carregaorcamentos', oPar);
+    
+    return
+}
