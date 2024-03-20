@@ -39,6 +39,7 @@ app\server.prg
 app\funcionarios.prg
 app\api_auth_wpp.prg
 app\api_brw_whats.prg
+app\api_dialog_orc.prg
 app\func_front_whats.prg
 
 C:\Concentra\trunk\LIBs\LIB\Abre_F_.prg

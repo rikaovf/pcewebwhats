@@ -155,35 +155,34 @@ retu aRows
 
 
 function dialogOrcamentos(oDom)
-	local idRetag := oDom:Get('idRetag')
-	local aOrcs := {}
-	local aARQS := { {"ACE003.001"  ,,,        },;
-		 			 {"ACE055.001"  ,,, "ICE0555"},;
-		 			 {"ACE056.001"  ,,, "ICE0560"},;
-		 			 {"ACE920.001"  ,,, "ICE9200"},;
-		 			 {"ACE921.001"  ,,, "ICE9211"},;
-		 			 {"ACE922.001"  ,,, "ICE9220"},;
-		 			 {"ACEWHATS.001",,,          },;
-		 			 {"XCE010.001"  ,,, "YCE010" },;
-		 			 {"ACE010.001"  ,,, "ICE010" } }
-	 
-	
-	if ! abre_fecha_arquivos(aArqs, .T.)
-		abre_fecha_arquivos(aArqs, .F.)
-		return nil
-	endif
+	local hSession
+	local nWhatsapp := oDom:Get('nWhatsapp')
+	local hData := {=>}
+		
+	///// SALVA O NUMERO DO CLIENTE PARA FILTRAR NO MOMENTO DA CHAMADA DO PROC
+	if USessionReady()
+        hSession := UGetSession()
+    endif
 
-	oDom:SetDialog('Orçamentos', dialogOrc(oDom, idRetag))
+	hData['ddd_orc'] := Padr(SubStr(nWhatsapp, 2, 2), 4)
+	hData['n_orc']   := Padl(StrTran(SubStr(nWhatsapp, 5, Len(nWhatsapp)), '-', ''), 10)
+		
+	Usession( 'data_orc', hData )
 	
-	abre_fecha_arquivos(aArqs, .F.)
+	if USessionReady()
+        hSession := UGetSession()
+    endif
+	///////////////////////////////////////////////////////////////////////////
+
+	oDom:SetDialog('Orçamentos', dialogOrc())
+
 return nil
 
 
 
 
-static function dialogOrc(oDom, idRetag)
+static function dialogOrc()
 	LOCAL o, oDlg, oBrw, oCol
-	LOCAL aRows := {}
 	LOCAL aOptions := {}
 
 	DEFINE DIALOG oDlg
@@ -191,6 +190,22 @@ static function dialogOrc(oDom, idRetag)
 		DEFINE FORM o ID 'dlgorc' API 'api_dialog_orc' OF oDlg
 		
 		INIT FORM o
+			/////// BOTAO GENERICO PARA ATUALIZAR OS ORCS - APOS INICIO FICA HIDDEN //////
+			BUTTON ID 'atualiza_orcs' LABEL '' ACTION 'setorcwhatsapi' GRID 1 OF o
+			///////////////////////////////////////////////////////////////////////////////
+			
+			HTML o
+				<script>
+					var atualizaOrcs = document.getElementById("dlgorc-atualiza_orcs");
+
+					setTimeout(() => {
+						atualizaOrcs.click();
+						atualizaOrcs.hidden = true;
+					}, 100);
+				</script>
+			ENDTEXT
+
+
 			ROW o VALIGN 'top'
 				COL o CLASS 's-0' GRID 11
 
@@ -198,15 +213,13 @@ static function dialogOrc(oDom, idRetag)
 							      'maxHeight' => '85vh' }
 					
 					DEFINE BROWSE oBrw ID 'orcwhats' OPTIONS aOptions OF o 
-						aRows := GetRowsOrc( "ACE921",, 50, oDom, idRetag )	
-		
-						oDom:TableSetData( 'orcwhats', aRows )
-					
-						COL oCol TO oBrw CONFIG { 'title' => "Numero", 'field' => "CHAVE_CLI", 'width' => 200, 'headerSort' => .F. }
-						COL oCol TO oBrw CONFIG { 'title' => "Paciente", 'field' => "N_WHATSAPP", 'width' => 200, 'headerSort' => .F. }
-						COL oCol TO oBrw CONFIG { 'title' => "Tipo", 'field' => "SITUACAO", 'formatter' => '_CorSituacao', 'headerSort' => .F. }
-						COL oCol TO oBrw CONFIG { 'title' => "Qtd.", 'field' => "DATA", 'headerSort' => .F. }
-						COL oCol TO oBrw CONFIG { 'title' => "Data", 'field' => "HORA", 'headerSort' => .F. }
+						COL oCol TO oBrw CONFIG { 'title' => "Numero", 'field' => "NUM", 'width' => 200, 'headerSort' => .F. }
+						COL oCol TO oBrw CONFIG { 'title' => "Nome", 'field' => "NOME", 'width' => 200, 'headerSort' => .F. }
+						COL oCol TO oBrw CONFIG { 'title' => "Valor", 'field' => "VALOR", 'headerSort' => .F. }
+						COL oCol TO oBrw CONFIG { 'title' => "Qtd.", 'field' => "QTD", 'headerSort' => .F. }
+						COL oCol TO oBrw CONFIG { 'title' => "Tipo", 'field' => "TIPO", 'headerSort' => .F. }
+						COL oCol TO oBrw CONFIG { 'title' => "Subtipo", 'field' => "SUBTIPO", 'headerSort' => .F. }
+						COL oCol TO oBrw CONFIG { 'title' => "Subtipo 2", 'field' => "SSUBTIPO", 'headerSort' => .F. }
 					INIT BROWSE oBrw 
 				ENDCOL o			
 			ENDROW o
@@ -215,61 +228,6 @@ static function dialogOrc(oDom, idRetag)
 		INIT DIALOG oDlg RETURN
 
 return nil
-
-
-
-
-
-
-
-
-
-
-function GetRowsOrc( cAlias, nRecno, nTotal, oDom, idRetag )
-
-	local aReg, j
-	local aRows 	:= {}
-	
-	local n 		:= 0
-	local aStr  	:= (cAlias)->( DbStruct() )
-	local nFields	:= len( aStr )
-	
-	(cAlias)->( setScope( 0, PadL(idRetag), 11) )
-	(cAlias)->( setScope( 1, PadL(idRetag), 11) ) 
-	(cAlias)->( dbGoTop() )
-
-	while n < nTotal .and. (cAlias)->( ! eof() ) 
-			
-		aReg := {=>}
-		
-		HB_HSet( aReg, 'id' 	, n )
-		HB_HSet( aReg, '_recno' 	, (cAlias)->( Recno() ) )
-		
-		for j := 1 to nFields
-			do case
-				case (cAlias)->( FieldName( j ) ) == 'W_PEDID_ID'
-					HB_HSet( aReg, (cAlias)->( FieldName( j ) ), (cAlias)->( FieldGet( j ) ) )
-				case (cAlias)->( FieldName( j ) ) == 'W_NORC'
-					HB_HSet( aReg, (cAlias)->( FieldName( j ) ), (cAlias)->( FieldGet( j ) ) )
-					HB_HSet( aReg, (cAlias)->( FieldName( j ) ), CodToDes( ACE921->W_NORC, 'ace055.001', 'ICE0555', 'rec_qsp' ) )
-					HB_HSet( aReg, (cAlias)->( FieldName( j ) ), CodToDes( ACE921->W_NORC, 'ace055.001', 'ICE0555', 'rec_qsp' ) )
-					HB_HSet( aReg, (cAlias)->( FieldName( j ) ), CodToDes( ACE921->W_NORC, 'ace055.001', 'ICE0555', 'rec_qsp' ) )
-					HB_HSet( aReg, (cAlias)->( FieldName( j ) ), CodToDes( ACE921->W_NORC, 'ace055.001', 'ICE0555', 'rec_qsp' ) )
-					HB_HSet( aReg, (cAlias)->( FieldName( j ) ), CodToDes( ACE921->W_NORC, 'ace055.001', 'ICE0555', 'rec_qsp' ) )
-					HB_HSet( aReg, (cAlias)->( FieldName( j ) ), CodToDes( ACE921->W_NORC, 'ace055.001', 'ICE0555', 'rec_qsp' ) )
-					HB_HSet( aReg, (cAlias)->( FieldName( j ) ), CodToDes( ACE921->W_NORC, 'ace055.001', 'ICE0555', 'rec_qsp' ) )
-			endcase		
-		next
-		
-		Aadd( aRows, aReg ) 
-
-		(cAlias)->( DbSkip() )
-		
-		n++
-	end 			
-
-retu aRows 
-
 
 
 

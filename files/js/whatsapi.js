@@ -500,6 +500,7 @@ function solicitaOrcApi(){
     var oPar = new Object();          
     
     oPar['idRetag'] = rowData.ID_RETAG;
+    oPar['nWhatsapp'] = rowData.N_WHATSAPP;
 
     MsgApi('api_brw_whats', 'carregaorcamentos', oPar);
     
