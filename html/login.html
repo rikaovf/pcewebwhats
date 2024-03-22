@@ -1,7 +1,7 @@
 <?prg 
 #include "lib/tweb/tweb.ch" 
 
-LOCAL o, oWeb, oSelect
+LOCAL o, oWeb, oSelect, oSelectFil
 
 LOCAL aNumeros := RetornaNumeros()
 
@@ -23,6 +23,10 @@ else
   INIT FORM o  
     DIV o ID 'div_login' CLASS 'div_login'
     
+      ROWGROUP o
+        SELECT oSelectFil ID 'cod_fil' LABEL 'Selecione a filial:' PROMPT RetornaFiliais() VALUES RetornaFiliais() GRID 6  OF o
+      ENDROW o		  
+
       ROWGROUP o
         SELECT oSelect ID 'num_login' LABEL 'Selecione o número:' PROMPT aNumeros VALUES aNumeros OF o
       ENDROW o		

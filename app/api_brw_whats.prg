@@ -13,7 +13,8 @@ function Api_Brw_whats( oDom )
 		case oDom:GetProc() == 'setdatawhatsapi'
 			SetDataWhatsApi( oDom )						
 		case oDom:GetProc() == 'carregaorcamentos'
-			dialogOrcamentos( oDom )
+			//dialogOrcamentos( oDom )
+			carregaEnviaOrcs( oDom)
 		case oDom:GetProc() == 'encerrar_sessao'            
 			USessionEnd()
 			URedirect('/')
@@ -147,95 +148,61 @@ retu aRows
 
 
 
-//////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////
-///////////////////// DLG ORC ////////////////////////////
-//////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////
 
-
-function dialogOrcamentos(oDom)
-	local hSession
-	local nWhatsapp := oDom:Get('nWhatsapp')
-	local hData := {=>}
-		
-	///// SALVA O NUMERO DO CLIENTE PARA FILTRAR NO MOMENTO DA CHAMADA DO PROC
-	if USessionReady()
-        hSession := UGetSession()
-    endif
-
-	hData['ddd_orc'] := Padr(SubStr(nWhatsapp, 2, 2), 4)
-	hData['n_orc']   := Padl(StrTran(SubStr(nWhatsapp, 5, Len(nWhatsapp)), '-', ''), 10)
-		
-	Usession( 'data_orc', hData )
+function carregaEnviaOrcs( oDom)
 	
-	if USessionReady()
-        hSession := UGetSession()
-    endif
-	///////////////////////////////////////////////////////////////////////////
+	local aReg, aData
+	local n := 1
+	local aRows := {}
+	local cWhatsapp := oDom:Get('nWhatsapp')
+	local cDDD := Padr(SubStr(cWhatsapp, 2, 2), 4)
+	local cNum := Padl(StrTran(SubStr(cWhatsapp, 5, Len(cWhatsapp)), '-', ''), 10)
 
-	oDom:SetDialog('Orçamentos', dialogOrc())
-
-return nil
-
-
-
-
-static function dialogOrc()
-	LOCAL o, oDlg, oBrw, oCol
-	LOCAL aOptions := {}
-
-	DEFINE DIALOG oDlg
-	
-		DEFINE FORM o ID 'dlgorc' API 'api_dialog_orc' OF oDlg
-		
-		INIT FORM o
-			/////// BOTAO GENERICO PARA ATUALIZAR OS ORCS - APOS INICIO FICA HIDDEN //////
-			BUTTON ID 'atualiza_orcs' LABEL '' ACTION 'setorcwhatsapi' GRID 1 OF o
-			///////////////////////////////////////////////////////////////////////////////
-			
-			HTML o
-				<script>
-					var atualizaOrcs = document.getElementById("dlgorc-atualiza_orcs");
-
-					setTimeout(() => {
-						atualizaOrcs.click();
-						atualizaOrcs.hidden = true;
-					}, 100);
-				</script>
-			ENDTEXT
-
-
-			ROW o VALIGN 'top'
-				COL o CLASS 's-0' GRID 11
-
-					aOptions := { 'index' => 'id',;
-							      'maxHeight' => '85vh' }
+	local aARQS := { {"ACE055.001"  ,,, "ICE0556"},;
+		 			 {"ACE056.001"  ,,, "ICE0560"} }
 					
-					DEFINE BROWSE oBrw ID 'orcwhats' OPTIONS aOptions OF o 
-						COL oCol TO oBrw CONFIG { 'title' => "Numero", 'field' => "NUM", 'width' => 200, 'headerSort' => .F. }
-						COL oCol TO oBrw CONFIG { 'title' => "Nome", 'field' => "NOME", 'width' => 200, 'headerSort' => .F. }
-						COL oCol TO oBrw CONFIG { 'title' => "Valor", 'field' => "VALOR", 'headerSort' => .F. }
-						COL oCol TO oBrw CONFIG { 'title' => "Qtd.", 'field' => "QTD", 'headerSort' => .F. }
-						COL oCol TO oBrw CONFIG { 'title' => "Tipo", 'field' => "TIPO", 'headerSort' => .F. }
-						COL oCol TO oBrw CONFIG { 'title' => "Subtipo", 'field' => "SUBTIPO", 'headerSort' => .F. }
-						COL oCol TO oBrw CONFIG { 'title' => "Subtipo 2", 'field' => "SSUBTIPO", 'headerSort' => .F. }
-					INIT BROWSE oBrw 
-				ENDCOL o			
-			ENDROW o
-		ENDFORM o
+
+	if ! abre_fecha_arquivos(aArqs, .T.)
+		oDom:SetError('Erro ao abrir arquivos DBF de orçamentos!')
+	else
+		ACE055->( setScope( 0, cNum ) )
+		ACE055->( setScope( 1, cNum ) )
+		ACE055->( dbGoTop() )
+
+		if ! ACE055->( DbVazio() )
+			while ACE055->( ! eof() ) 
+				aReg := {=>}
+				
+				HB_HSet( aReg, 'id', n )
+				HB_HSet( aReg, '_recno', ACE055->( Recno() ) )
+				HB_HSet( aReg, 'NUM', ACE055->rec_num )
+				HB_HSet( aReg, 'NOME', ACE055->rec_nom )
+				HB_HSet( aReg, 'DATA', FormataData(ACE055->rec_dat) )
+				HB_HSet( aReg, 'VALOR', ACE055->rec_pre )
+				HB_HSet( aReg, 'VALORTELA', 'R$ ' + Alltrim(Str(ACE055->rec_pre )))
+				HB_HSet( aReg, 'QTD', ACE055->rec_qsp )
+				HB_HSet( aReg, 'TIPO', ACE055->rec_tipo )
+				HB_HSet( aReg, 'SUBTIPO', ACE055->rec_sub_h )
+				HB_HSet( aReg, 'SSUBTIPO', ACE055->rec_tipo_h )
+
+				Aadd( aRows, aReg ) 
+
+				n++
+
+				ACE055->( DbSkip() )
+			enddo
+			
+			aData := {=>}
+			
+			HB_HSet( aData, 'data', aRows )
+			
+			oDom:SetJs('inserirOrcs', aData)
+		else
+			oDom:SetMsg('Não existem orçamentos incluídos para este cliente!')
+		endif
+	endif
+
+	abre_fecha_arquivos(aArqs, .F.)
 	
-		INIT DIALOG oDlg RETURN
-
 return nil
-
-
-
-
-
-
-
-
-
-
 

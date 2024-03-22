@@ -15,6 +15,7 @@ function api_auth_wpp(oDom)
             
             if !empty(cSenha_auth)
                 if Auth_funcionario(cFunc_auth, cSenha_auth)
+                    hData['fil']  := oDom:Get('cod_fil')
                     hData['func']  := StrZero(val(cFunc_auth), 5)
                     hData['senha'] := cSenha_auth
                     hData['numero']  := oDom:Get('num_login')

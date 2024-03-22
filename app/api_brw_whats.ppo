@@ -10,7 +10,8 @@ function Api_Brw_whats( oDom )
         case oDom:GetProc() == "setdatawhatsapi"
             SetDataWhatsApi( oDom )
         case oDom:GetProc() == "carregaorcamentos"
-            dialogOrcamentos( oDom )
+
+            carregaEnviaOrcs( oDom)
         case oDom:GetProc() == "encerrar_sessao"
             USessionEnd()
             URedirect("/")
@@ -225,3 +226,108 @@ o:Html( UInlinePrg( UReplaceBlocks( e"\t\t\t\t<script>\n\t\t\t\t\tvar atualizaOr
         return oDlg:Activate()
 
 return nil
+
+
+
+
+
+
+
+
+
+
+
+function carregaEnviaOrcs( oDom)
+
+    local aReg, aData
+    local n := 1
+    local aRows := {}
+    local cWhatsapp := oDom:Get("nWhatsapp")
+    local cDDD := Padr(SubStr(cWhatsapp, 2, 2), 4)
+    local cNum := Padl(StrTran(SubStr(cWhatsapp, 5, Len(cWhatsapp)), "-", ""), 10)
+
+
+    local aARQS := { {"ACE055.001"  ,,, "ICE0556"}, {"ACE056.001"  ,,, "ICE0560"} }
+
+
+    if ! abre_fecha_arquivos(aArqs, .T.)
+        oDom:SetError("Erro ao abrir arquivos DBF de orçamentos!")
+    else
+        ACE055->( setScope( 0, cNum ) )
+        ACE055->( setScope( 1, cNum ) )
+        ACE055->( dbGoTop() )
+
+        if ! ACE055->( DbVazio() )
+            while ACE055->( ! eof() )
+                aReg := {=>}
+
+                HB_HSet( aReg, "id", n )
+                HB_HSet( aReg, "_recno", ACE055->( Recno() ) )
+                HB_HSet( aReg, "NUM", ACE055->rec_num )
+                HB_HSet( aReg, "NOME", ACE055->rec_nom )
+                HB_HSet( aReg, "DATA", FormataData(ACE055->rec_dat) )
+                HB_HSet( aReg, "VALOR", ACE055->rec_pre )
+                HB_HSet( aReg, "VALORTELA", "R$ " + Alltrim(Str(ACE055->rec_pre )))
+                HB_HSet( aReg, "QTD", ACE055->rec_qsp )
+                HB_HSet( aReg, "TIPO", ACE055->rec_tipo )
+                HB_HSet( aReg, "SUBTIPO", ACE055->rec_sub_h )
+                HB_HSet( aReg, "SSUBTIPO", ACE055->rec_tipo_h )
+
+                Aadd( aRows, aReg )
+
+                n++
+
+                ACE055->( DbSkip() )
+            enddo
+
+            aData := {=>}
+
+            HB_HSet( aData, "data", aRows )
+
+            oDom:SetJs("inserirOrcs", aData)
+        else
+            oDom:SetMsg("Não existem orçamentos incluídos para este cliente!")
+        endif
+    endif
+
+    abre_fecha_arquivos(aArqs, .F.)
+
+return nil
+
+
+
+
+
+
+
+
+
+
+
+
+function retornaFil()
+    local cFil := ""
+    local hSession, hData
+
+    if USessionReady()
+        hSession := UGetSession()
+    endif
+
+    if (hData := USession("data_user")) <> nil
+        cFil := hData["fil"]
+    endif
+
+return cFil
+
+
+
+
+
+
+
+
+function FormataData(dData)
+
+local cData := DtoC(StoD(dData))
+
+return SubStr(cData, 9, 2) + "/" + SubStr(cData, 6, 2) + "/" + SubStr(cData, 1, 4)

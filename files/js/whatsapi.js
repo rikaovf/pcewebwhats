@@ -92,9 +92,6 @@ function montaChat(msgs){
                                             ['contato-orcs', 'bi', 'bi-list-ul'],
                                             contatoPai,
                                             'beforeend');
-
-                                             
-
     //////////
 
 
@@ -481,8 +478,12 @@ function carregaAudio(audioElement, idSerialized){
 function removeModals(){
     var bodyElement = document.querySelector('body');
     var modalElements = [...document.querySelectorAll('dialog')];
-
     
+    if(element.childElementCount > 2){
+        var elementChildNodes = element.childNodes;
+        element.removeChild(elementChildNodes[4]);
+    }
+
     if(modalElements.length > 0){
         modalElements.map((modal)=>{
             bodyElement.removeChild(modal);
@@ -496,7 +497,66 @@ function removeModals(){
 
 
 
+
+
+
 function solicitaOrcApi(){
+    const divConversaPai = document.getElementById('conversa_pai');
+    const listaOrcAberto = document.getElementById('lista-orcs');
+    
+    if (! listaOrcAberto){
+        divConversaPai.classList.remove('col-7');
+        divConversaPai.classList.add('col-4');
+
+        const divOrc = criaElementoDom('div',
+                                      [['id', 'lista-orcs']], ['col-3', 'borda_caixa_conv', 'lista-orcs'],
+                                      element,
+                                      'beforeend');
+
+        montaTableOrc(divOrc);
+    } else{
+        if(element.childElementCount > 2){
+            var elementChildNodes = element.childNodes;
+            
+            element.removeChild(elementChildNodes[4]);
+            
+            divConversaPai.classList.remove('col-4');
+            divConversaPai.classList.add('col-7');
+        }
+        
+    }
+}
+
+
+
+
+
+
+
+function montaTableOrc(divOrc){
+    var tableorc = new Tabulator("#lista-orcs", {
+                                                index: "id",
+                                                columns: [ {title:"Numero", field:"NUM"},
+                                                           {title:"Nome", field:"NOME", width:200, headerSort: false},
+                                                           {title:"Data", field:"DATA", width:200, headerSort: false},
+                                                           {title:"Valor", field:"VALORTELA", headerSort: false},
+                                                           {title:"Qtd.", field:"QTD", headerSort: false},
+                                                           {title:"Tipo", field:"TIPO", headerSort: false},
+                                                           {title:"Sub-tipo", field:"SUBTIPO", headerSort: false},
+                                                           {title:"Sub-tipo 2", field:"SSUBTIPO", headerSort: false} ],
+    });
+
+    solicitaDadosOrcApi()
+    //mensagemLoader(divOrc)
+}
+
+
+
+
+
+
+
+function solicitaDadosOrcApi(){
     var oPar = new Object();          
     
     oPar['idRetag'] = rowData.ID_RETAG;
@@ -506,6 +566,60 @@ function solicitaOrcApi(){
     
     return
 }
+
+
+
+
+
+
+function inserirOrcs(data){
+    const tableorc = Tabulator.findTable('#lista-orcs')[0];
+    const orcs = data.data;
+
+    tableorc.on("tableBuilt", ()=>{
+        tableorc.setData(orcs);
+    });
+}
+
+
+
+// exemploo de promisse
+/*setTimeout(function() {
+// Returns promise that resolves to all installed modules
+function getAllModules() {
+    return new Promise((resolve) => {
+        const id = _.uniqueId("fakeModule_");
+        window["webpackJsonp"](
+            [],
+            {
+                [id]: function(module, exports, __webpack_require__) {
+                    resolve(__webpack_require__.c);
+                }
+            },
+            [id]
+        );
+    });
+}*/
+
+
+
+/*function mensagemLoader(divOrc){
+    
+    const loadCircleOrc = criaElementoDom('div',
+                                       [['id', 'LoadOrc']], ['loader-circle'],
+                                       divOrc,
+                                       'beforeend');
+    
+    const textoLoaderOrc = criaElementoDom('p',
+                                       [['id', 'TextoLoadOrc']], ['texto-loader'],
+                                       divOrc,
+                                       'beforeend',
+                                       'Aguarde, carregando orçamentos...');
+    
+    return
+}*/
+
+
 
 
 

@@ -267,7 +267,6 @@ FUNCTION ParametroWhatsApp( cCampo, cFilial, uDefault, uValor )
     DBCLEARFILTER()
  
  RETURN uValor
- 
 
 
 
@@ -279,4 +278,49 @@ FUNCTION ParametroWhatsApp( cCampo, cFilial, uDefault, uValor )
 
 
 
- 
+
+ function retornaFil()
+    local cFil := ''
+    local hSession, hData
+
+    if USessionReady()
+        hSession := UGetSession()
+    endif
+
+	if (hData := USession('data_user')) != nil
+		cFil := hData['fil']
+	endif
+
+return cFil 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+function FormataData(dData)
+
+    local cData := DtoC(StoD(dData))
+    
+return SubStr(cData, 9, 2) + '/' + SubStr(cData, 6, 2) + '/' + SubStr(cData, 1, 4)
+
+
+
+
+
+
+
+
+
+
+
+
+
