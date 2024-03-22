@@ -324,3 +324,41 @@ return SubStr(cData, 9, 2) + '/' + SubStr(cData, 6, 2) + '/' + SubStr(cData, 1, 
 
 
 
+function retornaTipos(nTipo, nSub, nHSub, cCampo)
+
+local aARQS := {}
+local aFiliais := Directory('FIL?????', 'D')
+local cTipo := StrZero(nTipo, 2) + StrZero(nSub, 2) + StrZero(nHSub, 2)
+
+ADelPack( aFiliais, { |e,i| ! FILE(e[i, 1] + "\ACE090.001") } )
+
+if len(aFiliais) > 0
+    Aadd(aARQS, { '\FIL' + allTrim(RetornaFil()) + "\ACE090.001","TIPOS",, "ICE0901" } )
+else
+    Aadd(aARQS, { "ACE090.001", "TIPOS",, "ICE0901" } )
+endif
+
+if ! abre_fecha_arquivos(aArqs, .T.)
+    abre_fecha_arquivos(aArqs, .F.)
+    cTipo := "Erro no arquivo"
+    return cTipo
+endif
+
+if ! TIPOS->( DBSEEKORD( cTipo, "ICE0901" ) )
+    cTipo := "Não detectado"
+else
+    if empty(cCampo)
+        cTipo := TIPOS->MNU_DES
+    else
+        do case
+            case cCampo == "UNIDADE"
+                cTipo := TIPOS->MNU_APRES                                
+            otherwise
+                cTipo := ""
+        endcase            
+    endif
+endif
+
+abre_fecha_arquivos(aArqs, .F.)
+
+return cTipo

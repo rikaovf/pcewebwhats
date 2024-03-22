@@ -181,9 +181,8 @@ function carregaEnviaOrcs( oDom)
 				HB_HSet( aReg, 'VALOR', ACE055->rec_pre )
 				HB_HSet( aReg, 'VALORTELA', 'R$ ' + Alltrim(Str(ACE055->rec_pre )))
 				HB_HSet( aReg, 'QTD', ACE055->rec_qsp )
-				HB_HSet( aReg, 'TIPO', ACE055->rec_tipo )
-				HB_HSet( aReg, 'SUBTIPO', ACE055->rec_sub_h )
-				HB_HSet( aReg, 'SSUBTIPO', ACE055->rec_tipo_h )
+				HB_HSet( aReg, 'UN', retornaTipos(ACE055->rec_tipo, ACE055->rec_sub_h, ACE055->rec_tipo_h, "UNIDADE"))
+				HB_HSet( aReg, 'TIPO', retornaTipos(ACE055->rec_tipo, ACE055->rec_sub_h, ACE055->rec_tipo_h))
 
 				Aadd( aRows, aReg ) 
 

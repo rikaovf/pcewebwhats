@@ -541,9 +541,8 @@ function montaTableOrc(divOrc){
                                                            {title:"Data", field:"DATA", width:200, headerSort: false},
                                                            {title:"Valor", field:"VALORTELA", headerSort: false},
                                                            {title:"Qtd.", field:"QTD", headerSort: false},
-                                                           {title:"Tipo", field:"TIPO", headerSort: false},
-                                                           {title:"Sub-tipo", field:"SUBTIPO", headerSort: false},
-                                                           {title:"Sub-tipo 2", field:"SSUBTIPO", headerSort: false} ],
+                                                           {title:"Un.", field:"UN", headerSort: false},
+                                                           {title:"Tipo", field:"TIPO", headerSort: false} ],
     });
 
     solicitaDadosOrcApi()

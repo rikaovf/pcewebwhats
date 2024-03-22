@@ -146,97 +146,6 @@ retu aRows
 
 
 
-
-
-
-
-
-
-function dialogOrcamentos(oDom)
-    local hSession
-    local nWhatsapp := oDom:Get("nWhatsapp")
-    local hData := {=>}
-
-
-    if USessionReady()
-        hSession := UGetSession()
-    endif
-
-    hData["ddd_orc"] := Padr(SubStr(nWhatsapp, 2, 2), 4)
-    hData["n_orc"]   := Padl(StrTran(SubStr(nWhatsapp, 5, Len(nWhatsapp)), "-", ""), 10)
-
-    Usession( "data_orc", hData )
-
-    if USessionReady()
-        hSession := UGetSession()
-    endif
-
-
-    oDom:SetDialog("Orçamentos", dialogOrc())
-
-return nil
-
-
-
-
-static function dialogOrc()
-    LOCAL o, oDlg, oBrw, oCol
-    LOCAL aOptions := {}
-
-    oDlg := TWebDialog():New()
-
-        o := TWebForm():New( oDlg, "dlgorc",,, "api_dialog_orc", )
-
-        o:InitForm( )
-
-            TWebButton():New( o, "atualiza_orcs", "", "setorcwhatsapi",,, 1,,,,,,,,,,,,,, )
-
-
-
-
-
-
-
-
-
-
-
-o:Html( UInlinePrg( UReplaceBlocks( e"\t\t\t\t<script>\n\t\t\t\t\tvar atualizaOrcs = document.getElementById(\"dlgorc-atualiza_orcs\");\n\n\t\t\t\t\tsetTimeout(() => {\n\t\t\t\t\t\tatualizaOrcs.click();\n\t\t\t\t\t\tatualizaOrcs.hidden = true;\n\t\t\t\t\t}, 100);\n\t\t\t\t</script>\n", "<$", "$>" ) ) )
-
-
-            o:Row(, "top",,,,, )
-                o:Col(, 11,, "s-0",, )
-
-
-                    aOptions := { "index" => "id", "maxHeight" => "85vh" }
-
-                    oBrw := TWebBrowse():New( o, "orcwhats", aOptions,,,,,,,, )
-                        oCol := oBrw:AddCol( { "title" => "Numero", "field" => "NUM", "width" => 200, "headerSort" => .F. } )
-                        oCol := oBrw:AddCol( { "title" => "Nome", "field" => "NOME", "width" => 200, "headerSort" => .F. } )
-                        oCol := oBrw:AddCol( { "title" => "Valor", "field" => "VALOR", "headerSort" => .F. } )
-                        oCol := oBrw:AddCol( { "title" => "Qtd.", "field" => "QTD", "headerSort" => .F. } )
-                        oCol := oBrw:AddCol( { "title" => "Tipo", "field" => "TIPO", "headerSort" => .F. } )
-                        oCol := oBrw:AddCol( { "title" => "Subtipo", "field" => "SUBTIPO", "headerSort" => .F. } )
-                        oCol := oBrw:AddCol( { "title" => "Subtipo 2", "field" => "SSUBTIPO", "headerSort" => .F. } )
-                    oBrw:Init( )
-                o:End()
-            o:End()
-        o:End()
-
-        return oDlg:Activate()
-
-return nil
-
-
-
-
-
-
-
-
-
-
-
 function carregaEnviaOrcs( oDom)
 
     local aReg, aData
@@ -269,9 +178,8 @@ function carregaEnviaOrcs( oDom)
                 HB_HSet( aReg, "VALOR", ACE055->rec_pre )
                 HB_HSet( aReg, "VALORTELA", "R$ " + Alltrim(Str(ACE055->rec_pre )))
                 HB_HSet( aReg, "QTD", ACE055->rec_qsp )
-                HB_HSet( aReg, "TIPO", ACE055->rec_tipo )
-                HB_HSet( aReg, "SUBTIPO", ACE055->rec_sub_h )
-                HB_HSet( aReg, "SSUBTIPO", ACE055->rec_tipo_h )
+                HB_HSet( aReg, "UN", retornaTipos(ACE055->rec_tipo, ACE055->rec_sub_h, ACE055->rec_tipo_h, "UNIDADE"))
+                HB_HSet( aReg, "TIPO", retornaTipos(ACE055->rec_tipo, ACE055->rec_sub_h, ACE055->rec_tipo_h))
 
                 Aadd( aRows, aReg )
 
@@ -293,41 +201,3 @@ function carregaEnviaOrcs( oDom)
     abre_fecha_arquivos(aArqs, .F.)
 
 return nil
-
-
-
-
-
-
-
-
-
-
-
-
-function retornaFil()
-    local cFil := ""
-    local hSession, hData
-
-    if USessionReady()
-        hSession := UGetSession()
-    endif
-
-    if (hData := USession("data_user")) <> nil
-        cFil := hData["fil"]
-    endif
-
-return cFil
-
-
-
-
-
-
-
-
-function FormataData(dData)
-
-local cData := DtoC(StoD(dData))
-
-return SubStr(cData, 9, 2) + "/" + SubStr(cData, 6, 2) + "/" + SubStr(cData, 1, 4)
