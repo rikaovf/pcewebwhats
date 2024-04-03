@@ -12,6 +12,7 @@
 
 #-icon=.\appHb\data\pceweb.ico
 
+-incpath=C:\Concentra\trunk\Farmacia\PCE\LIB
 -incpath=C:\Concentra\trunk\LIBs\LIB
 -incpath=C:\concentra\trunk\LIBs\LIB\Include
 -incpath=C:\harbour\include
@@ -79,6 +80,7 @@ C:\Concentra\trunk\LIBs\LIB\Valida_S.prg
 
 C:\Concentra\trunk\Farmacia\PCE\LIB\Parametros.prg
 C:\Concentra\trunk\Farmacia\PCE\LIB\ParametroGenerico.prg
+C:\Concentra\trunk\Farmacia\PCE\LIB\WhatsAPI_Orc.prg
 
 
 C:\Concentra\trunk\Farmacia\PCE\xHbFuncoes.prg

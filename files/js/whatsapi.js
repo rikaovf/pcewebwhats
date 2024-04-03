@@ -603,7 +603,26 @@ function inserirOrcs(data){
 function PreencheOrcs(){
     const tableorc = Tabulator.findTable('#lista-orcs')[0];
 
-    console.log('clicou');
+    if (typeof(tableorc) != 'undefined'){
+        const arrOrcs = tableorc.getSelectedRows();
+
+        if(arrOrcs.length >= 1){
+            var oPar = new Object();          
+            
+            oPar['numorcs'] = [];
+            
+            arrOrcs.map((orc)=>{
+                oPar['numorcs'].push(orc._row.data.NUM);
+                tableorc.deselectRow(orc);
+            })
+
+            MsgApi('api_brw_whats', 'preencheorcamentos', oPar);
+        }        
+
+    } else{
+        alert('Erro na listagem de orçamentos, feche a conversa e abra novamente!');
+    }
+    
 }
 
 

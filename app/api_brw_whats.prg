@@ -1,7 +1,6 @@
 #include "defines_whats.ch"
 #include "lib/tweb/tweb.ch" 
 
-
 function Api_Brw_whats( oDom )
 	local hSession
 
@@ -14,7 +13,9 @@ function Api_Brw_whats( oDom )
 			SetDataWhatsApi( oDom )						
 		case oDom:GetProc() == 'carregaorcamentos'
 			//dialogOrcamentos( oDom )
-			carregaEnviaOrcs( oDom)
+			carregaEnviaOrcs( oDom )
+		case oDom:GetProc() == 'preencheorcamentos'
+			preencheEnviaOrcs( oDom )
 		case oDom:GetProc() == 'encerrar_sessao'            
 			USessionEnd()
 			URedirect('/')
@@ -205,3 +206,36 @@ function carregaEnviaOrcs( oDom)
 	
 return nil
 
+
+
+
+
+
+
+function preencheEnviaOrcs (oDom)
+
+	local aData
+	
+	local cMensagem := ''
+	local aOrcs := oDom:Get('numorcs')
+	
+	local aARQS := { {"ACE055.001"  ,,, "ICE0556"},;
+		 			 {"ACE056.001"  ,,, "ICE0560"} }
+					
+
+	oDom:Console('1')
+	if ! abre_fecha_arquivos(aArqs, .T.)
+		oDom:SetError('Erro ao abrir arquivos DBF de orçamentos!')
+	else
+		oDom:Console(aOrcs)
+		//GeraPDFNovoWhats(.F.,,,.T.,aORCS)
+		//aData := {=>}
+			
+		//HB_HSet( aData, 'mensagemOrc', cMensagem )
+		
+		//oDom:SetJs('inserirOrcs', aData)
+	endif
+
+	abre_fecha_arquivos(aArqs, .F.)
+
+return nil
