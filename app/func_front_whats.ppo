@@ -352,7 +352,7 @@ else
     else
         do case
             case cCampo == "UNIDADE"
-                cTipo := TIPOS->MNU_APRES
+                cTipo := Upper(TIPOS->MNU_APRES)
             otherwise
                 cTipo := ""
         endcase

@@ -21,7 +21,7 @@
 
 -head=full
 
--o\work\PCEWEB
+-o\work\WEBWHATS
 
 -Llib\uhttpd2\msvc64
 -luhttpd2

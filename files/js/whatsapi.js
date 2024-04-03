@@ -22,7 +22,7 @@ function abreMensagens(){
     if(phone.trim().length === 0 || port.trim().length === 0){
         alert("Há inconsistências na configuração do servidor whatsapp. Phone ou porta vazios!");
     } else{
-        fetch(`${config.server}:${config.port}/getmsgfromchat/?id=${rowData.id_serial}`)
+        fetch(`${config.server}:${config.port}/getmsgfromchat/?id=${rowData.id_serial}&limit=80`)
         .then((res) => {
             return res.json();
         })
@@ -226,7 +226,7 @@ function insereMensagemDom(msg, divMensagens){
                     
                     break;
                 default:
-                    console.log('Tipo não suportado:\nid: ' + msg.id.id + '\ntype: ' + msg.type);
+                    //console.log('Tipo não suportado:\nid: ' + msg.id.id + '\ntype: ' + msg.type);
             }
         }
     }
@@ -339,7 +339,7 @@ function atualizaMensagens(){
 
     var divConversa = document.getElementById('conversa');
     
-    fetch(`${config.server}:${config.port}/getmsgfromchat/?id=${rowData.id_serial}`)
+    fetch(`${config.server}:${config.port}/getmsgfromchat/?id=${rowData.id_serial}&limit=10`)
         .then((res) => {
             return res.json();
         })
@@ -509,11 +509,23 @@ function solicitaOrcApi(){
         divConversaPai.classList.add('col-4');
 
         const divOrc = criaElementoDom('div',
-                                      [['id', 'lista-orcs']], ['col-3', 'borda_caixa_conv', 'lista-orcs'],
+                                      [['id', 'div-orcs']], ['col-3', 'borda_caixa_conv', 'div-orcs'],
                                       element,
                                       'beforeend');
+                                      
+        const btnOrc = criaElementoDom('button',
+                                      [['id', 'envia-orcs'], ["onclick", "PreencheOrcs()"]], ['btn_envia-orcs'],
+                                      divOrc,
+                                      'beforeend',
+                                      'Enviar selecionados');
 
-        montaTableOrc(divOrc);
+        const divTableOrc = criaElementoDom('div',
+                                      [['id', 'lista-orcs']], ['lista-orcs'],
+                                      divOrc,
+                                      'beforeend');
+        
+
+        montaTableOrc();
     } else{
         if(element.childElementCount > 2){
             var elementChildNodes = element.childNodes;
@@ -533,19 +545,21 @@ function solicitaOrcApi(){
 
 
 
-function montaTableOrc(divOrc){
+function montaTableOrc(){
     var tableorc = new Tabulator("#lista-orcs", {
                                                 index: "id",
-                                                columns: [ {title:"Numero", field:"NUM"},
-                                                           {title:"Nome", field:"NOME", width:200, headerSort: false},
-                                                           {title:"Data", field:"DATA", width:200, headerSort: false},
-                                                           {title:"Valor", field:"VALORTELA", headerSort: false},
-                                                           {title:"Qtd.", field:"QTD", headerSort: false},
-                                                           {title:"Un.", field:"UN", headerSort: false},
-                                                           {title:"Tipo", field:"TIPO", headerSort: false} ],
+                                                selectable:true,
+                                                columns: [ {title:"Numero", field:"NUM", hozAlign:"center"},
+                                                           {title:"Nome", field:"NOME", width:200, headerSort: false, hozAlign:"center"},
+                                                           {title:"Data", field:"DATA", width:200, headerSort: false, hozAlign:"center"},
+                                                           {title:"Valor", field:"VALORTELA", headerSort: false, hozAlign:"center"},
+                                                           {title:"Qtd.", field:"QTD", headerSort: false, hozAlign:"center"},
+                                                           {title:"Un.", field:"UN", headerSort: false, hozAlign:"center"},
+                                                           {title:"Tipo", field:"TIPO", headerSort: false, hozAlign:"center"} ],
     });
 
     solicitaDadosOrcApi()
+    //let orcs = Tabulator.findTable('#lista-orcs');
     //mensagemLoader(divOrc)
 }
 
@@ -579,6 +593,19 @@ function inserirOrcs(data){
         tableorc.setData(orcs);
     });
 }
+
+
+
+
+
+
+
+function PreencheOrcs(){
+    const tableorc = Tabulator.findTable('#lista-orcs')[0];
+
+    console.log('clicou');
+}
+
 
 
 

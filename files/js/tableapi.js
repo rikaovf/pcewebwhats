@@ -40,7 +40,7 @@ if(typeof(table) == 'undefined'){
             var parentCircle = loadCircle.parentNode;
                         
             clearInterval(intervaloAtualizaTable);
-            
+
             tableElement.classList.add('borda_caixa_conv')
 
             parentCircle.removeChild(loadCircle);

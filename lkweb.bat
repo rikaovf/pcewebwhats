@@ -1,6 +1,6 @@
 ﻿@echo off
 
-taskkill -im pceweb.exe -f
+taskkill -im WEBWHATS.exe -f
 
 c:
 
@@ -32,13 +32,13 @@ c:\harbour\bin\hbmk2 main.hbp -comp=msvc64
 
 IF ERRORLEVEL 1 GOTO COMPILEERROR
 
-xcopy c:\work\PCEWEB.exe   f:\wsuporte\whatsapp /I/E/Y/Q
+xcopy c:\work\WEBWHATS.exe   f:\wsuporte\whatsapp /I/E/Y/Q
 
 f:
 
 cd \wsuporte\whatsapp
 
-start pceweb.exe
+start WEBWHATS.exe
 
 GOTO EXIT
 

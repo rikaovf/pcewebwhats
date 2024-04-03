@@ -98,6 +98,8 @@ html ::-webkit-scrollbar-track {
 .contato-orcs{
     border: none;
     background-color: inherit;
+    color: aliceblue;
+    font-weight: bold;
     margin-left: 1rem;
     display: flex;
     flex-wrap: wrap;
@@ -107,8 +109,40 @@ html ::-webkit-scrollbar-track {
 }
 
 
-.lista-orcs{
+.div-orcs{
+    background-color: #6c6c6c !important;
     height: 100%;
+}
+
+.btn_envia-orcs{
+    border: 2px solid #060606;
+    background-color: #9fb2d5;
+    color: darkslategrey;
+    cursor: pointer;
+    font-size: smaller;
+    font-variant: petite-caps;
+    font-weight: bold;
+    margin-top: 5px;
+    margin-bottom: 3px;
+    border-radius: 10px;
+    height: 50px;
+    width: 120px;
+    
+    &:hover{
+        border: 2px solid #060606;
+        background-color: #098034;
+        color:#fff;
+    }
+
+    &:active{
+        border: 2px solid #060606;
+        background-color: #0f4623;
+        color:#fff;
+    }
+}
+
+.lista-orcs{
+    height: 90%;
 }
 
 

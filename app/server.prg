@@ -25,7 +25,7 @@ function WebServer()
        local oServer := UHttpd2New()
 
        oServer:lUtf8 := .t.
-       oServer:SetPort(81)
+       oServer:SetPort(83)
        oServer:SetDirFiles( 'data' )
        oServer:SetDirFiles( 'files' )
        oServer:bInit := {|hInfo| ShowInfo( hInfo ) }
