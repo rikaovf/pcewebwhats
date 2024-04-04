@@ -226,7 +226,7 @@ function preencheEnviaOrcs (oDom)
         oDom:SetError("Erro ao abrir arquivos DBF de orçamentos!")
     else
         oDom:Console(aOrcs)
-
+        GeraPDFNovoWhats(.F.,,,.T.,aORCS)
 
 
 

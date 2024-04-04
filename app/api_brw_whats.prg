@@ -228,12 +228,10 @@ function preencheEnviaOrcs (oDom)
 		oDom:SetError('Erro ao abrir arquivos DBF de orçamentos!')
 	else
 		oDom:Console(aOrcs)
-		//GeraPDFNovoWhats(.F.,,,.T.,aORCS)
-		//aData := {=>}
-			
-		//HB_HSet( aData, 'mensagemOrc', cMensagem )
 		
-		//oDom:SetJs('inserirOrcs', aData)
+		if GeraPDFNovoWhats(.F.,,,.T.,aORCS)
+			oDom:SetJs('enviaOrcPdf')
+		endif
 	endif
 
 	abre_fecha_arquivos(aArqs, .F.)

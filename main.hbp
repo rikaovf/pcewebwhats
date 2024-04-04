@@ -38,6 +38,7 @@
 app\main.prg
 app\server.prg
 app\funcionarios.prg
+app\funcoeswhats.prg
 app\api_auth_wpp.prg
 app\api_brw_whats.prg
 app\api_dialog_orc.prg
@@ -74,10 +75,12 @@ C:\Concentra\trunk\LIBs\LIB\SeekOrd.prg
 C:\Concentra\trunk\LIBs\LIB\SenhaDoMes.prg
 C:\Concentra\trunk\LIBs\LIB\SetScope.prg
 C:\Concentra\trunk\LIBs\LIB\ShellExecute.prg
+C:\Concentra\trunk\LIBs\LIB\StrB.prg
 C:\Concentra\trunk\LIBs\LIB\StrErro.prg
 C:\Concentra\trunk\LIBs\LIB\Valida_S.prg
 
 
+C:\Concentra\trunk\Farmacia\PCE\LIB\Clas_Pro.prg
 C:\Concentra\trunk\Farmacia\PCE\LIB\Parametros.prg
 C:\Concentra\trunk\Farmacia\PCE\LIB\ParametroGenerico.prg
 C:\Concentra\trunk\Farmacia\PCE\LIB\WhatsAPI_Orc.prg

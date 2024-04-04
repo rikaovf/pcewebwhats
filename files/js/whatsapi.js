@@ -628,6 +628,14 @@ function PreencheOrcs(){
 
 
 
+
+function enviaOrcPdf(){
+    console.log('x');
+}
+
+
+
+
 // exemploo de promisse
 /*setTimeout(function() {
 // Returns promise that resolves to all installed modules
