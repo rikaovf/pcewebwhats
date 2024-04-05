@@ -215,22 +215,25 @@ return nil
 function preencheEnviaOrcs (oDom)
 
 	local aData
-	
 	local cMensagem := ''
 	local aOrcs := oDom:Get('numorcs')
+	local cArq := oDom:Get('nomearq')
 	
 	local aARQS := { {"ACE055.001"  ,,, "ICE0556"},;
 		 			 {"ACE056.001"  ,,, "ICE0560"} }
 					
 
-	oDom:Console('1')
 	if ! abre_fecha_arquivos(aArqs, .T.)
 		oDom:SetError('Erro ao abrir arquivos DBF de orçamentos!')
 	else
-		oDom:Console(aOrcs)
-		
 		if GeraPDFNovoWhats(.F.,,,.T.,aORCS)
-			oDom:SetJs('enviaOrcPdf')
+			aData := {=>}
+			
+			cArq := hb_CurDrive() + ":\" + CurDir() + "\" + "OrcWhats" + "\" + alltrim( cArq )
+
+			HB_HSet( aData, 'arq', cArq )
+			
+			oDom:SetJs('enviaOrcPdf', aData)
 		endif
 	endif
 

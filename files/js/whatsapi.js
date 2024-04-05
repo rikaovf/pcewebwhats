@@ -242,26 +242,39 @@ function insereMensagemDom(msg, divMensagens){
 
 
 
-function EnviaMensagem(){
+function EnviaMensagem(arq){
     
     var textArea = document.querySelector('#texto_input');
     var texto = textArea.value;
-    
+    var body = {}
+    var envia = false;
+
     if(phone.trim().length === 0 || port.trim().length === 0){
         alert("Há inconsistências na configuração do servidor whatsapp. Phone ou porta vazios!");
-    } else if(texto != ''){
-        const body = {
+    } else if(texto != '' && typeof(arq) == 'undefined'){
+        body = {
             id: rowData.id_serial,
             text: texto}/*,
-            type:'',
-            media:'',
             sendseen: true}*/
+
+            envia = true;
+    } else if(typeof(arq) != 'undefined'){
+        body = {
+            id: rowData.id_serial,
+            text: texto != '' ? texto : '',
+            type: undefined,
+            media: arq}
+
+            envia = true;
+    }
+
+    if (envia){                
         const options = {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(body) };
-        
-            fetch(`${config.server}:${config.port}/sendmsg`, options)
+
+        fetch(`${config.server}:${config.port}/sendmsg`, options)
         .then(() => {
             console.log("Mensagem enviada para " + body.id);
         })
@@ -610,11 +623,15 @@ function PreencheOrcs(){
             var oPar = new Object();          
             
             oPar['numorcs'] = [];
+            oPar['nomearq'] = '';
             
             arrOrcs.map((orc)=>{
                 oPar['numorcs'].push(orc._row.data.NUM);
+                oPar['nomearq'] += orc._row.data.NUM;
                 tableorc.deselectRow(orc);
             })
+
+            oPar['nomearq'] += '.pdf'
 
             MsgApi('api_brw_whats', 'preencheorcamentos', oPar);
         }        
@@ -629,8 +646,8 @@ function PreencheOrcs(){
 
 
 
-function enviaOrcPdf(){
-    console.log('x');
+function enviaOrcPdf(arquivo){
+    EnviaMensagem(arquivo.arq)
 }
 
 
