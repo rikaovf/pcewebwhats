@@ -158,7 +158,24 @@ html ::-webkit-scrollbar-track {
     contain: content;
 }
 
+.msgQuote{
+    background-color: lightgray;
+    border-top: 2px solid lightgray;
+    border-left: 2px solid lightgray;
+    border-radius: 5px;
+    width: max-content;
+    margin-bottom: -6px;
+    margin-left: 5px;
+    cursor: pointer;
+}
+
 .imgMsg{
+    width: 200px;
+    height: 200px;
+    cursor: pointer;
+}
+
+.videoMsg{
     width: 200px;
     height: 200px;
     cursor: pointer;
@@ -282,3 +299,26 @@ textarea:focus, input:focus, select:focus {
     font-size: 2em;
     margin-right: -1rem
 }
+
+
+.piscaMensagem{
+    border: 3px solid blue !important;
+}
+/*
+.piscaMensagem{
+    animation-delay:2s;
+    animation-duration: 3s;
+    animation-name: piscaMsg;
+}
+
+@keyframes piscaMsg {
+    0%{
+        background-color: #9fb2d5 !important;
+    }
+    50%{
+        background-color: blue !important;
+    }
+    100%{
+        background-color: inherit !important;
+    }
+  }*/

@@ -174,10 +174,16 @@ function montaChat(msgs){
 
 
 
-function insereMensagemDom(msg, divMensagens){
+function insereMensagemDom(msg, divMensagens, quotedMsg, idQuoted){
+    var msgQt = '';
+    var quotedMsg = typeof(quotedMsg) == 'undefined' ? false : true;
     var divConversa = document.getElementById('conversa');
     var classmsg = ['msg', 'row', 'col-7', 'm-1', 'rounded', 'shadow-sm', 'p-2', 'mb-2'];
-    var idSerialized = msg.id._serialized;
+    var idSerialized = typeof(idQuoted) != 'undefined' ? idQuoted : msg.id._serialized;
+    
+    if (msg.hasQuotedMsg && !quotedMsg){        
+        insereMensagemDom(msg._data.quotedMsg, divMensagens, true, msg._data.quotedStanzaID)
+    }
     
     if(divConversa != undefined){
         if (msg.fromMe){
@@ -191,44 +197,87 @@ function insereMensagemDom(msg, divMensagens){
             }
         }        
         
-        if(msg.type == 'chat' || msg.type == 'revoked'){
-            criaElementoDom('p', [['data-id', msg.id.id]], classmsg, divMensagens, 'beforeend', msg.type == 'revoked' ? '🚫 Mensagem apagada' : msg.body);
+        if (!quotedMsg){        
+            if(msg.type == 'chat' || msg.type == 'revoked'){
+                criaElementoDom('p', [['data-id', msg.id.id]], classmsg, divMensagens, 'beforeend', msg.type == 'revoked' ? '🚫 Mensagem apagada' : msg.body);
+            } else{
+                switch(msg.type){
+                    case 'image':
+                        classmsg.push('imgMsg');
+                        criaElementoDom('img', [['data-id', msg.id.id], ['id', idSerialized], ['src', '']], classmsg, divMensagens, 'beforeend', msg.body);
+                        downloadInsereMedia(idSerialized, msg.type)
+                        
+                        break;
+                    case 'video':
+                        classmsg.push('videoMsg');
+                        criaElementoDom('video', [['data-id', msg.id.id], ['id', idSerialized], ['src', ''], ['controls', '']], classmsg, divMensagens, 'beforeend', msg.body);
+                        downloadInsereMedia(idSerialized, msg.type)
+                        
+                        break;
+                    case 'ptt':
+                        classmsg.push('audioMsg');
+                        var audioElement = criaElementoDom('p', [['data-id', msg.id.id], ['id', idSerialized]], classmsg, divMensagens, 'beforeend');
+                        var audio = criaElementoDom('audio', [['src', ''], ['controls', '']], [], audioElement, 'beforeend');
+                        carregaAudio(audio, idSerialized);
+                        
+                        break;
+                    case 'document':
+                        classmsg.push('docMsg', 'bi', msg._data.mimetype == 'application/pdf' ? 'bi-filetype-pdf' : 'bi-file-earmark-word');
+                        var docElement = criaElementoDom('a', [['data-id', msg.id.id], ['id', idSerialized]], classmsg, divMensagens, 'beforeend', msg.body);
+                        downloadDoc(idSerialized, docElement, msg._data.caption, msg.fromMe);
+                        
+                        break;
+                    case 'sticker':
+                        classmsg.push('stickerMsg');
+                        criaElementoDom('img', [['data-id', msg.id.id], ['id', idSerialized], ['src', '']], classmsg, divMensagens, 'beforeend', msg.body);
+                        downloadInsereMedia(idSerialized, msg.type);
+                        
+                        break;
+                    case 'ciphertext':
+                        classmsg.push('cipherText');
+                        criaElementoDom('p', [['data-id', msg.id.id]], classmsg, divMensagens, 'beforeend', msg.body);
+                        
+                        break;
+                    default:
+                        //console.log('Tipo não suportado:\nid: ' + msg.id.id + '\ntype: ' + msg.type);
+                }
+            }
         } else{
             switch(msg.type){
                 case 'image':
-                    classmsg.push('imgMsg');
-                    criaElementoDom('img', [['data-id', msg.id.id], ['id', idSerialized], ['src', '']], classmsg, divMensagens, 'beforeend', msg.body);
-                    downloadInsereMedia(idSerialized, msg.type)
+                    msgQt = criaElementoDom('p', [['data-id', idSerialized]], ['msgQuote'], divMensagens, 'beforeend', '📷 Foto - ' + msg.body);
+                    
+                    break;
+                case 'video':
+                    msgQt = criaElementoDom('p', [['data-id', idSerialized]], ['msgQuote'], divMensagens, 'beforeend', '🎥 Vídeo - ' + msg.body);
                     
                     break;
                 case 'ptt':
-                    classmsg.push('audioMsg');
-                    var audioElement = criaElementoDom('p', [['data-id', msg.id.id], ['id', idSerialized]], classmsg, divMensagens, 'beforeend');
-                    var audio = criaElementoDom('audio', [['src', ''], ['controls', '']], [], audioElement, 'beforeend');
-                    carregaAudio(audio, idSerialized);
-                    
+                    msgQt = criaElementoDom('p', [['data-id', idSerialized]], ['msgQuote'], divMensagens, 'beforeend', '🎵 Áudio - ' + msg.body);
+
                     break;
                 case 'document':
-                    classmsg.push('docMsg', 'bi', msg._data.mimetype == 'application/pdf' ? 'bi-filetype-pdf' : 'bi-file-earmark-word');
-                    var docElement = criaElementoDom('a', [['data-id', msg.id.id], ['id', idSerialized]], classmsg, divMensagens, 'beforeend', msg.body);
-                    downloadDoc(idSerialized, docElement, msg._data.caption, msg.fromMe);
-                    
+                    msgQt = criaElementoDom('p', [['data-id', idSerialized]], ['msgQuote'], divMensagens, 'beforeend', '📄 Documento - ' + msg.body);
+
                     break;
                 case 'sticker':
-                    classmsg.push('stickerMsg');
-                    criaElementoDom('img', [['data-id', msg.id.id], ['id', idSerialized], ['src', '']], classmsg, divMensagens, 'beforeend', msg.body);
-                    downloadInsereMedia(idSerialized, msg.type);
-                    
+                    msgQt = criaElementoDom('p', [['data-id', idSerialized]], ['msgQuote'], divMensagens, 'beforeend', '📲 Figurinha - ' + msg.body);
+                
                     break;
                 case 'ciphertext':
-                    classmsg.push('cipherText');
-                    criaElementoDom('p', [['data-id', msg.id.id]], classmsg, divMensagens, 'beforeend', msg.body);
+                    msgQt = criaElementoDom('p', [['data-id', idSerialized]], classmsg, divMensagens, 'beforeend', msg.body);
                     
                     break;
                 default:
-                    //console.log('Tipo não suportado:\nid: ' + msg.id.id + '\ntype: ' + msg.type);
-            }
-        }
+                    msgQt = criaElementoDom('p', [['data-id', idSerialized]], ['msgQuote'], divMensagens, 'beforeend', msg.body);
+                    
+                    break;
+                }
+        
+            msgQt.addEventListener('click', () => {
+                navegaAteMensagem(idSerialized);
+            })
+    }
     }
     return;
 }
@@ -401,7 +450,7 @@ function downloadInsereMedia(idSerial, tipo){
             
             if(tipo == 'image'){
                 addModalImg(elementoMedia, idSerial);
-            }
+            } 
 
         } else throw  new Error('Mensagem não encontrada!');
         
@@ -688,6 +737,36 @@ function getAllModules() {
     
     return
 }*/
+
+
+
+
+
+
+
+
+function navegaAteMensagem(idSerialized){
+    const mensagens = [...document.getElementsByTagName('p')];
+    
+    mensagens.every((m)=>{
+        if(m.dataset.id == idSerialized){
+            m.scrollIntoView({ behavior: "smooth" });
+            m.classList.toggle('piscaMensagem')
+            setTimeout(()=>{
+                m.classList.toggle('piscaMensagem')
+            }, 4000)
+
+            return false;
+        }
+
+        return true;
+    })
+
+}
+
+
+
+
 
 
 
