@@ -1,6 +1,6 @@
 #include "conc.ch"
 
-function RetornaFiliais()
+function RetornaFiliaisWpp()
 
 local aARQS := { { "ACE086.001",,, "ICE086" } }
 

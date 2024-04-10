@@ -24,7 +24,7 @@ else
     DIV o ID 'div_login' CLASS 'div_login'
     
       ROWGROUP o
-        SELECT oSelectFil ID 'cod_fil' LABEL 'Selecione a filial:' PROMPT RetornaFiliais() VALUES RetornaFiliais() GRID 6  OF o
+        SELECT oSelectFil ID 'cod_fil' LABEL 'Selecione a filial:' PROMPT RetornaFiliaisWpp() VALUES RetornaFiliaisWpp() GRID 6  OF o
       ENDROW o		  
 
       ROWGROUP o
