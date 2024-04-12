@@ -35,6 +35,8 @@ retu oDom:Send()
 
 static function SetDataWhatsApi( oDom )
 
+	local hChats, hData
+	local hPhone := {=>}
 	local aRows := {}
 	local aARQS := { { "ACE398.001",,, "ICE3982" },;
 					 { "ACE026.001",,, "ICE026" } }
@@ -46,8 +48,12 @@ static function SetDataWhatsApi( oDom )
 
 	aRows := GetRows( "ACE398",, 150, oDom )	
 	
-	oDom:TableSetData( 'tablewhats', aRows )
-
+	hChats := {=>}
+			
+	HB_HSet( hChats, 'chats', aRows )
+	
+	oDom:SetJs('setTableChats', hChats)
+		
 	abre_fecha_arquivos(aArqs, .F.)
 	
 retu nil
@@ -87,10 +93,10 @@ function GetRows( cAlias, nRecno, nTotal, oDom )
 	endif
 
 	
-	hPhone['phone'] := hData['numero']
+	/*hPhone['phone'] := hData['numero']
 	hPhone['port'] := hData['port']
 
-	oDom:SetJs('setPhone', hPhone)
+	oDom:SetJs('setPhone', hPhone)*/
 	
 	while n < nTotal .and. (cAlias)->( ! eof() ) 
 			

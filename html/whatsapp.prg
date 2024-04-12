@@ -38,11 +38,6 @@
 			//////////////// FIM CABEÇALHO //////////////
 
 
-			/////// BOTAO GENERICO PARA ATUALIZAR OS CHATS - APOS INICIO FICA HIDDEN //////
-			BUTTON ID 'atualiza_chats' LABEL '' ACTION 'setdatawhatsapi' GRID 1 OF o
-			///////////////////////////////////////////////////////////////////////////////
-			
-
 			////////////// INICIALIZAÇÃO DE VARIAVEIS //////////////
 			HTML o
 				<script>
@@ -51,12 +46,18 @@
 					var config = {};
 					var phoneEmpty = true;
 					var atualiza = false;
-					var atualizaChats = document.getElementById("brw_whats-atualiza_chats");
+					var intervaloChecaTable = 0;
 
-					setTimeout(() => {
-						atualizaChats.click();
-						atualizaChats.hidden = true;
-					}, 100);
+					/*setTimeout(() => {
+						atualizaChats();
+					}, 100);*/
+					atualizaChats();
+
+					function atualizaChats(){
+						MsgApi('api_brw_whats', 'setdatawhatsapi');
+						
+						return
+					}
 				</script>
 
 				<script type="module">
@@ -103,8 +104,12 @@
 					brwWhats.classList.add('col-12');
 
 					setInterval(() => {
-						atualizaChats.click();
-					}, 10000);
+						//var dataTeste = new Date();
+						atualizaChats();
+						/*var dataTesteAux = new Date();
+						console.log('Taxa de atualização dos chats:' +
+									(parseInt(dataTesteAux.getSeconds()) - parseInt(dataTeste.getSeconds())).toString() + 's');*/
+					}, 8000);
 				</script>
 			ENDTEXT	
 			/////////////////////////////////////////////////////////////////////////////

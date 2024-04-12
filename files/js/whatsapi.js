@@ -7,36 +7,23 @@ document.addEventListener('keyup', function(event) {
 
 
 
-function setPhone(phoneData){
-
-    if(phoneEmpty){
-        phone = phoneData.phone;
-        port = phoneData.port;
-    }
-
-}
-
-
 function abreMensagens(){
+        
+    fetch(`${config.server}:${config.port}/getmsgfromchat/?id=${rowData.id_serial}&limit=80`)
+    .then((res) => {
+        return res.json();
+    })
+    .then((msgs) =>{
+        console.log(msgs);
+        montaChat(msgs);
+        intervaloAtualiza = setInterval(()=>{
+            atualizaMensagens()
+        }, 8000)
+    })
+    .catch((err) => {
+        console.log(err);
+    });
     
-    if(phone.trim().length === 0 || port.trim().length === 0){
-        alert("Há inconsistências na configuração do servidor whatsapp. Phone ou porta vazios!");
-    } else{
-        fetch(`${config.server}:${config.port}/getmsgfromchat/?id=${rowData.id_serial}&limit=80`)
-        .then((res) => {
-            return res.json();
-        })
-        .then((msgs) =>{
-            console.log(msgs);
-            montaChat(msgs);
-            intervaloAtualiza = setInterval(()=>{
-                atualizaMensagens()
-            }, 8000)
-        })
-        .catch((err) => {
-            console.log(err);
-        });
-    }
 }
 
 
@@ -298,9 +285,7 @@ function EnviaMensagem(arq){
     var body = {}
     var envia = false;
 
-    if(phone.trim().length === 0 || port.trim().length === 0){
-        alert("Há inconsistências na configuração do servidor whatsapp. Phone ou porta vazios!");
-    } else if(texto != '' && typeof(arq) == 'undefined'){
+    if(texto != '' && typeof(arq) == 'undefined'){        
         body = {
             id: rowData.id_serial,
             text: texto}/*,
@@ -419,7 +404,6 @@ function atualizaMensagens(){
                 }
             }
 
-            //divConversa.scrollTo( { top: 1000000000, behavior: "smooth" } );
         })
         .catch((err) => {
             console.log(err);
@@ -621,8 +605,6 @@ function montaTableOrc(){
     });
 
     solicitaDadosOrcApi()
-    //let orcs = Tabulator.findTable('#lista-orcs');
-    //mensagemLoader(divOrc)
 }
 
 
@@ -722,23 +704,6 @@ function getAllModules() {
 
 
 
-/*function mensagemLoader(divOrc){
-    
-    const loadCircleOrc = criaElementoDom('div',
-                                       [['id', 'LoadOrc']], ['loader-circle'],
-                                       divOrc,
-                                       'beforeend');
-    
-    const textoLoaderOrc = criaElementoDom('p',
-                                       [['id', 'TextoLoadOrc']], ['texto-loader'],
-                                       divOrc,
-                                       'beforeend',
-                                       'Aguarde, carregando orçamentos...');
-    
-    return
-}*/
-
-
 
 
 
@@ -763,6 +728,34 @@ function navegaAteMensagem(idSerialized){
     })
 
 }
+
+
+
+
+
+
+
+
+
+
+
+function setTableChats(chats){
+    
+    intervaloChecaTable = setInterval(()=>{
+            if(tableReady){
+                clearInterval(intervaloChecaTable);
+                table.setData(chats.chats);
+            }
+        }, 2000)
+
+    return;
+}
+
+
+
+
+
+
 
 
 

@@ -1,6 +1,7 @@
 var rowData = {};
 var intervaloAtualizaHeader = 0;
 var intervaloAtualizaTable = 0;
+var tableReady = false;
 var header = document.getElementsByClassName('header')[0];
 var table = Tabulator.findTable('#brw_whats-tablewhats')[0];
 var loadCircle = document.querySelector('#loadCircle');
@@ -35,9 +36,11 @@ if(typeof(table) == 'undefined'){
     intervaloAtualizaTable = setInterval(()=>{
         table = Tabulator.findTable('#brw_whats-tablewhats')[0]
 
-        if(typeof(table) != 'undefined' && table.dataLoader.requestOrder == 2){
+        if(typeof(table) != 'undefined'){ //&& table.dataLoader.requestOrder == 2){
             var tableElement = document.getElementById('brw_whats-tablewhats');
             var parentCircle = loadCircle.parentNode;
+
+            tableReady = true;
                         
             clearInterval(intervaloAtualizaTable);
 
