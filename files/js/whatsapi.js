@@ -163,11 +163,13 @@ function montaChat(msgs){
 
 function insereMensagemDom(msg, divMensagens, quotedMsg, idQuoted){
     var msgQt = '';
-    var quotedMsg = typeof(quotedMsg) == 'undefined' ? false : true;
     var divConversa = document.getElementById('conversa');
     var classmsg = ['msg', 'row', 'col-7', 'm-1', 'rounded', 'shadow-sm', 'p-2', 'mb-2'];
+    var quotedMsg = typeof(quotedMsg) == 'undefined' ? false : true;
     var idSerialized = typeof(idQuoted) != 'undefined' ? idQuoted : msg.id._serialized;
-    
+    var dateMsg = new Date(( typeof(msg.timestamp) != 'undefined' ? msg.timestamp : 915062400) * 1000);
+    var timeMsg = dateMsg.toLocaleTimeString("pt-BR");
+
     if (msg.hasQuotedMsg && !quotedMsg){        
         insereMensagemDom(msg._data.quotedMsg, divMensagens, true, msg._data.quotedStanzaID)
     }
@@ -186,7 +188,7 @@ function insereMensagemDom(msg, divMensagens, quotedMsg, idQuoted){
         
         if (!quotedMsg){        
             if(msg.type == 'chat' || msg.type == 'revoked'){
-                criaElementoDom('p', [['data-id', msg.id.id]], classmsg, divMensagens, 'beforeend', msg.type == 'revoked' ? '🚫 Mensagem apagada' : msg.body);
+                criaElementoDom('p', [['data-id', msg.id.id]], classmsg, divMensagens, 'beforeend', msg.type == 'revoked' ? '🚫 Mensagem apagada' : msg.body, timeMsg);
             } else{
                 switch(msg.type){
                     case 'image':
@@ -210,7 +212,7 @@ function insereMensagemDom(msg, divMensagens, quotedMsg, idQuoted){
                         break;
                     case 'document':
                         classmsg.push('docMsg', 'bi', msg._data.mimetype == 'application/pdf' ? 'bi-filetype-pdf' : 'bi-file-earmark-word');
-                        var docElement = criaElementoDom('a', [['data-id', msg.id.id], ['id', idSerialized]], classmsg, divMensagens, 'beforeend', msg.body);
+                        var docElement = criaElementoDom('a', [['data-id', msg.id.id], ['id', idSerialized]], classmsg, divMensagens, 'beforeend', msg.body, timeMsg);
                         downloadDoc(idSerialized, docElement, msg._data.caption, msg.fromMe);
                         
                         break;
@@ -328,9 +330,9 @@ function EnviaMensagem(arq){
 
 
 
-function criaElementoDom(tipo, atributos, classes, elementoInsert, posicaoInsert, conteudoElm){
+function criaElementoDom(tipo, atributos, classes, elementoInsert, posicaoInsert, conteudoElm, timeMsg, isStack){
     var elemento = document.createElement(tipo);
-
+    
     if(atributos != undefined){
         atributos.forEach(atrib => {
             elemento.setAttribute(atrib[0], atrib[1])
@@ -351,6 +353,10 @@ function criaElementoDom(tipo, atributos, classes, elementoInsert, posicaoInsert
         elemento.innerText = conteudoElm;
     }
 
+    if(typeof(isStack) == 'undefined' && typeof(timeMsg) == 'string'){
+        criaElementoDom('p', [], ['horarioMsg'], elemento, 'beforeend', timeMsg, undefined, true);
+    }
+    
     return elemento;
 }
 
@@ -364,6 +370,7 @@ function criaElementoDom(tipo, atributos, classes, elementoInsert, posicaoInsert
 
 function fechaConversa(){
     var conv = document.getElementById('conversa_pai');
+    var orcs = document.getElementById('div-orcs');
     
     if(conv != null){
         children = [...element.children]
@@ -371,6 +378,7 @@ function fechaConversa(){
         children[0].classList.add('col-11')
 
         element.removeChild(conv);
+        element.removeChild(orcs);
         rowData = {};
         clearInterval(intervaloAtualiza);
         removeModals();
@@ -744,7 +752,12 @@ function setTableChats(chats){
     intervaloChecaTable = setInterval(()=>{
             if(tableReady){
                 clearInterval(intervaloChecaTable);
+                
+                // vai depender da memória e processamento da máquina o tempo de atualização da tabela abaixo não adianta
+                // por promise pois o método setData do tabulator é sincrono, e acaba travando a interface por alguns segundos.
+                // Se botar pelo pceweb "oDom:TableSetData", ele demora o dobro de tempo, então optei por fazer por aqui.
                 table.setData(chats.chats);
+                /////////
             }
         }, 2000)
 

@@ -44,15 +44,6 @@ static function SetDataWhatsApi( oDom )
         return nil
     endif
 
-
-
-
-
-
-
-
-
-
     aRows := GetRows( "ACE398",, 150, oDom )
 
     hChats := {=>}
@@ -60,7 +51,6 @@ static function SetDataWhatsApi( oDom )
     HB_HSet( hChats, "chats", aRows )
 
     oDom:SetJs("setTableChats", hChats)
-
 
     abre_fecha_arquivos(aArqs, .F.)
 
