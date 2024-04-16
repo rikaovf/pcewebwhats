@@ -39,7 +39,7 @@ static function SetDataWhatsApi( oDom )
 	local hPhone := {=>}
 	local aRows := {}
 	local aARQS := { { "ACE398.001",,, "ICE3982" },;
-					 { "ACE026.001",,, "ICE026" } }
+					 { "ACE026.001",,, "ICE026"  } }
 	
 	if ! abre_fecha_arquivos(aArqs, .T.)
 		abre_fecha_arquivos(aArqs, .F.)

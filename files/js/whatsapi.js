@@ -1,3 +1,6 @@
+var dataMsg = '';
+
+
 document.addEventListener('keyup', function(event) {
 
     if (event.key === 'Escape') {
@@ -8,6 +11,8 @@ document.addEventListener('keyup', function(event) {
 
 
 function abreMensagens(){
+
+    dataMsg = '';
         
     fetch(`${config.server}:${config.port}/getmsgfromchat/?id=${rowData.id_serial}&limit=80`)
     .then((res) => {
@@ -161,22 +166,33 @@ function montaChat(msgs){
 
 
 
-function insereMensagemDom(msg, divMensagens, quotedMsg, idQuoted){
+function insereMensagemDom(msg, divMensagens, quotedMsg, idQuoted, msgFromMe){
     var msgQt = '';
     var divConversa = document.getElementById('conversa');
     var classmsg = ['msg', 'row', 'col-7', 'm-1', 'rounded', 'shadow-sm', 'p-2', 'mb-2'];
     var quotedMsg = typeof(quotedMsg) == 'undefined' ? false : true;
     var idSerialized = typeof(idQuoted) != 'undefined' ? idQuoted : msg.id._serialized;
-    var dateMsg = new Date(( typeof(msg.timestamp) != 'undefined' ? msg.timestamp : 915062400) * 1000);
-    var timeMsg = dateMsg.toLocaleTimeString("pt-BR");
-
+    var tsMsg = new Date(( typeof(msg.timestamp) != 'undefined' ? msg.timestamp : 915062400) * 1000);
+    var dateMsg = tsMsg.toLocaleDateString("pt-BR");
+    var timeMsg = tsMsg.toLocaleTimeString("pt-BR");
+    
     if (msg.hasQuotedMsg && !quotedMsg){        
-        insereMensagemDom(msg._data.quotedMsg, divMensagens, true, msg._data.quotedStanzaID)
+        insereMensagemDom(msg._data.quotedMsg, divMensagens, true, msg._data.quotedStanzaID, msg.fromMe)
+    } else if(!quotedMsg){
+        if(dataMsg == ''){
+            criaElementoDom('p', [], ['dataMsg'], divMensagens, 'beforeend', dateMsg);
+            dataMsg = dateMsg;
+        } else{
+            if(dataMsg != dateMsg){
+                criaElementoDom('p', [], ['dataMsg'], divMensagens, 'beforeend', dateMsg);
+                dataMsg = dateMsg;
+            }
+        }
     }
     
     if(divConversa != undefined){
         if (msg.fromMe){
-            classmsg.push('text-end', 'text-black', 'bg-success');
+            classmsg.push('text-end', 'text-black', 'bg-success', 'fromMe');
         } else{
             if(msg.type == 'ciphertext'){
                 msg.body = 'Falha ao descriptografar mensagem. Conferir no aparelho!'
@@ -187,6 +203,7 @@ function insereMensagemDom(msg, divMensagens, quotedMsg, idQuoted){
         }        
         
         if (!quotedMsg){        
+
             if(msg.type == 'chat' || msg.type == 'revoked'){
                 criaElementoDom('p', [['data-id', msg.id.id]], classmsg, divMensagens, 'beforeend', msg.type == 'revoked' ? '🚫 Mensagem apagada' : msg.body, timeMsg);
             } else{
@@ -205,13 +222,21 @@ function insereMensagemDom(msg, divMensagens, quotedMsg, idQuoted){
                         break;
                     case 'ptt':
                         classmsg.push('audioMsg');
-                        var audioElement = criaElementoDom('p', [['data-id', msg.id.id], ['id', idSerialized]], classmsg, divMensagens, 'beforeend');
+                        if(msg.fromMe){
+                            classmsg.push('mediaFromMe');
+                        }
+
+                        var audioElement = criaElementoDom('p', [['data-id', msg.id.id], ['id', idSerialized]], classmsg, divMensagens, 'beforeend', undefined, timeMsg);
                         var audio = criaElementoDom('audio', [['src', ''], ['controls', '']], [], audioElement, 'beforeend');
                         carregaAudio(audio, idSerialized);
                         
                         break;
                     case 'document':
                         classmsg.push('docMsg', 'bi', msg._data.mimetype == 'application/pdf' ? 'bi-filetype-pdf' : 'bi-file-earmark-word');
+                        if(msg.fromMe){
+                            classmsg.push('mediaFromMe');
+                        }
+
                         var docElement = criaElementoDom('a', [['data-id', msg.id.id], ['id', idSerialized]], classmsg, divMensagens, 'beforeend', msg.body, timeMsg);
                         downloadDoc(idSerialized, docElement, msg._data.caption, msg.fromMe);
                         
@@ -232,33 +257,39 @@ function insereMensagemDom(msg, divMensagens, quotedMsg, idQuoted){
                 }
             }
         } else{
+            var classQt = ['msgQuote']
+
+            if(msgFromMe){
+                classQt.push('fromMe')
+            }
+
             switch(msg.type){
                 case 'image':
-                    msgQt = criaElementoDom('p', [['data-id', idSerialized]], ['msgQuote'], divMensagens, 'beforeend', '📷 Foto - ' + msg.body);
+                    msgQt = criaElementoDom('p', [['data-id', idSerialized]], classQt, divMensagens, 'beforeend', '📷 Foto - ' + msg.body);
                     
                     break;
                 case 'video':
-                    msgQt = criaElementoDom('p', [['data-id', idSerialized]], ['msgQuote'], divMensagens, 'beforeend', '🎥 Vídeo - ' + msg.body);
+                    msgQt = criaElementoDom('p', [['data-id', idSerialized]], classQt, divMensagens, 'beforeend', '🎥 Vídeo - ' + msg.body);
                     
                     break;
                 case 'ptt':
-                    msgQt = criaElementoDom('p', [['data-id', idSerialized]], ['msgQuote'], divMensagens, 'beforeend', '🎵 Áudio - ' + msg.body);
+                    msgQt = criaElementoDom('p', [['data-id', idSerialized]], classQt, divMensagens, 'beforeend', '🎵 Áudio - ' + msg.body);
 
                     break;
                 case 'document':
-                    msgQt = criaElementoDom('p', [['data-id', idSerialized]], ['msgQuote'], divMensagens, 'beforeend', '📄 Documento - ' + msg.body);
+                    msgQt = criaElementoDom('p', [['data-id', idSerialized]], classQt, divMensagens, 'beforeend', '📄 Documento - ' + msg.body);
 
                     break;
                 case 'sticker':
-                    msgQt = criaElementoDom('p', [['data-id', idSerialized]], ['msgQuote'], divMensagens, 'beforeend', '📲 Figurinha - ' + msg.body);
+                    msgQt = criaElementoDom('p', [['data-id', idSerialized]], classQt, divMensagens, 'beforeend', '📲 Figurinha - ' + msg.body);
                 
                     break;
                 case 'ciphertext':
-                    msgQt = criaElementoDom('p', [['data-id', idSerialized]], classmsg, divMensagens, 'beforeend', msg.body);
+                    msgQt = criaElementoDom('p', [['data-id', idSerialized]], classQt, divMensagens, 'beforeend', msg.body);
                     
                     break;
                 default:
-                    msgQt = criaElementoDom('p', [['data-id', idSerialized]], ['msgQuote'], divMensagens, 'beforeend', msg.body);
+                    msgQt = criaElementoDom('p', [['data-id', idSerialized]], classQt, divMensagens, 'beforeend', msg.body);
                     
                     break;
                 }
