@@ -8,8 +8,8 @@ REQUEST HB_LANG_ES
 REQUEST TWEB
 
 function InitServer()
-    hb_cdpSelect("UTF8")
-    hb_LangSelect('ES')
+    hb_cdpSelect("PT850")
+    hb_LangSelect('PT')
 
 	Set( _SET_DATEFORMAT, 'YYYY-MM-DD' )
 	

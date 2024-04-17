@@ -7,8 +7,8 @@ EXTERNAL HB_LANG_ES
 EXTERNAL TWEB
 
 function InitServer()
-    hb_cdpSelect("UTF8")
-    hb_LangSelect("ES")
+    hb_cdpSelect("PT850")
+    hb_LangSelect("PT")
 
     Set( 4, "YYYY-MM-DD" )
 

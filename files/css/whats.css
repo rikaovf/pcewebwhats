@@ -209,14 +209,14 @@ html ::-webkit-scrollbar-track {
 }
 
 .imgMsg{
-    width: 200px;
-    height: 200px;
+    width: 100%;
+    height: 25em;
     cursor: pointer;
 }
 
 .videoMsg{
-    width: 200px;
-    height: 200px;
+    width: 100%;
+    height: 25em;
     cursor: pointer;
 }
 
@@ -230,8 +230,6 @@ html ::-webkit-scrollbar-track {
     /*margin-left: calc(100% - 5em) !important;*/
     justify-content: center;
     font-size: larger;
-    width: 100%;
-    height: 50px;
 }
 
 .docMsg{
@@ -339,9 +337,12 @@ textarea:focus, input:focus, select:focus {
 }
 
 audio {
-    width: 12em;
+    margin-right: 3em;
+    width: calc(100% - 3em);
     height: 1.5em;
 }
+
+
 /*
 .piscaMensagem{
     animation-delay:2s;

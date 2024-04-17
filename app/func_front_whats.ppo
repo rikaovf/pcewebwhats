@@ -1,9 +1,9 @@
-/////// colocar no PCE000 quando iniciar o mesmo, fazer uma varredura em todos os registros do 
-////// 398 para que ele preencha todos os PHONES no 920, senao vai dar pau.
 
-********
+
+
+
 function RetornaNumeros()
-********
+
 
 LOCAL aNums := {}
 local aARQS := { { "ACE920.001",,, "ICE9202" } }
@@ -24,9 +24,9 @@ return aNums
 
 
 
-********
+
 function PhonePortaWhats(cNum)
-********
+
 local cPort := ""
 local aARQS := { { "ACE920.001",,, "ICE9202" } }
 
@@ -50,9 +50,9 @@ return cNum
 
 
 
-********
+
 function formataTelefone( cFone )
-********
+
     LOCAL cFoneRet := ""
 
     cFone := Right( cFone, 11 )
@@ -67,15 +67,15 @@ function formataTelefone( cFone )
     endcase
 
 return cFoneRet
-        
-    
-    
-    
 
 
-******************************
+
+
+
+
+
 function retornaNomeCliente( lFoneGrupo, cChaveCli, lForcaAtualiza )
-******************************
+
     LOCAL cCli_Nome  := ""
     LOCAL cCli_chave := alltrim(ACE398->chave_cli)
     LOCAL lLocked
@@ -83,7 +83,7 @@ function retornaNomeCliente( lFoneGrupo, cChaveCli, lForcaAtualiza )
     hb_default(@lFoneGrupo, .F.)
     hb_default(@cChaveCli, .F.)
     hb_default(@lForcaAtualiza, .F.)
-    
+
     IF !empty( cChaveCli)
         if ACE398->( dbSeekord( cChaveCli, "ICE3981" ) )
             cCli_chave := alltrim(ACE398->chave_cli)
@@ -100,7 +100,7 @@ function retornaNomeCliente( lFoneGrupo, cChaveCli, lForcaAtualiza )
         cCli_chave := alltrim(ACE397->chave_cli)
     endif
 
-    if !lFoneGrupo .and. (empty(cCli_chave) .or. cCli_chave = "NaoEncontrado" .or. cCli_chave = "Erro" .or. lForcaAtualiza )
+    if !lFoneGrupo .AND. (empty(cCli_chave) .OR. cCli_chave = "NaoEncontrado" .OR. cCli_chave = "Erro" .OR. lForcaAtualiza )
         cCli_chave := retornaChaveCliente(, "ACE398")
         IF ! ACE398->chave_cli == cCli_chave
             IF !( lLocked := ACE398->(IsLocked()) )
@@ -113,7 +113,7 @@ function retornaNomeCliente( lFoneGrupo, cChaveCli, lForcaAtualiza )
         ENDIF
     endif
 
-    if lFoneGrupo .and. (empty(cCli_chave) .or. cCli_chave = "NaoEncontrado" .or. cCli_chave = "Erro" .or. left(cCli_chave, 3) = "GRP")
+    if lFoneGrupo .AND. (empty(cCli_chave) .OR. cCli_chave = "NaoEncontrado" .OR. cCli_chave = "Erro" .OR. left(cCli_chave, 3) = "GRP")
         cCli_Nome := transform( ACE397->n_whatsapp, "@R 99 (99) 99999-9999" )
 
     elseif empty(cCli_chave)
@@ -139,29 +139,29 @@ return cCli_Nome
 
 
 
-********
+
 function retornaChaveCliente( lForcaCliente, cAlias, cFone )
-    ********
+
     local cGrupo := ""
     local cChave_Cli := ""
     local cDDD := ""
     local nRec
 
-    hb_default(@lForcaCliente, .F.) 
-    hb_default(@cAlias, "") 
-    hb_default(@cFone, "") 
-    
+    hb_default(@lForcaCliente, .F.)
+    hb_default(@cAlias, "")
+    hb_default(@cFone, "")
+
     if empty(cFone)
         cFone := (cAlias)->n_whatsapp
 
-        if !lForcaCliente .and. cAlias = "SQLMensagens"
+        if !lForcaCliente .AND. cAlias = "SQLMensagens"
             cGrupo := (cAlias)->n_wpp_grp
         endif
     endif
 
     if len( alltrim( cFone ) ) > 9
         cFone := right( cFone, len(cFone)-4 )
-//    cFone := right( alltrim( cFone ), len(cFone)-4 )
+
     endif
 
     cFone := padl( alltrim(cFone), FoneTamanho() )
@@ -171,15 +171,15 @@ function retornaChaveCliente( lForcaCliente, cAlias, cFone )
 
     elseif !empty( cFone )
 
-        if ACE026->( dbSeekOrd( padl(cFone, 10), "ICE0261"  ) ) .or.; // Tel
-            ACE026->( dbSeekOrd( padl(cFone, 10), "ICE02610" ) ) .or.; // Fone1
-            ACE026->( dbSeekOrd( padl(cFone, 10), "ICE02611" ) ) .or.; // Fone2
-            ACE026->( dbSeekOrd( padl(cFone, 10), "ICE02612" ) )       // Fone3
 
 
-            //Pegar a chave no titular se for o caso. Por Barbosa 20/03/2020.
+
+        if ACE026->( dbSeekOrd( padl(cFone, 10), "ICE0261"  ) ) .OR. ACE026->( dbSeekOrd( padl(cFone, 10), "ICE02610" ) ) .OR. ACE026->( dbSeekOrd( padl(cFone, 10), "ICE02611" ) ) .OR. ACE026->( dbSeekOrd( padl(cFone, 10), "ICE02612" ) )
+
+
+
             nRec := ace026->( RecNo(  ) )
-            if ParametroWhatsApp("CLI_CHTIT",,.T.) .and. !Empty( Ace026->Cli_Chatit ) .and. Ace026->(DbSeekOrd(Ace026->Cli_ChaTit,"ICE0268") )
+            if ParametroWhatsApp("CLI_CHTIT",,.T.) .AND. !Empty( Ace026->Cli_Chatit ) .AND. Ace026->(DbSeekOrd(Ace026->Cli_ChaTit,"ICE0268") )
             ace026->(DbGoTo(nRec))
             cChave_Cli := Ace026->Cli_Chatit
             else
@@ -196,28 +196,28 @@ function retornaChaveCliente( lForcaCliente, cAlias, cFone )
     endif
 
 return cChave_Cli
-    
-    
-    
+
+
+
 
 
 
 function DbVazio()
 
     local nREG, lVAZIO
-    
+
     if EMPTY( ALIAS() )
         return ( .T. )
     endif
-    
+
     nREG   := RecNo()
-    
+
     DbGoTop()
-    
+
     lVAZIO := BOF() .AND. EOF()
-    
+
     DbGoto( nREG )
-     
+
 Return ( lVAZIO )
 
 
@@ -230,42 +230,42 @@ Return ( lVAZIO )
 FUNCTION ParametroWhatsApp( cCampo, cFilial, uDefault, uValor )
     local nPosicao
     local nHandle
-    //local uValor := uDefault
- 
+
+
     hb_default(@cFilial, NIL)
     hb_default(@uDefault, NIL)
     hb_default(@uValor, uDefault)
-    
+
 
     xNETUSE( "ACEWHATS.001", "ACEWHATS", "C" )
-    
-    SELECT ACEWHATS
-    
+
+    dbSelectArea( "ACEWHATS" )
+
     if !EMPTY(cFILIAL)
        DBSETFILTER( { || ACEWHATS->FILIAL == cFILIAL } )
     endif
- 
+
     if ( nPOSICAO :=  FIELDPOS( cCAMPO ) ) > 0
-       if Empty( uValor) .or. !Empty( uDefault )
+       if Empty( uValor) .OR. !Empty( uDefault )
           uValor := FIELDGET( nPOSICAO )
-       endif   
- 
-       if (  Empty( uValor) .and. ValType(uValor) != "L" ) .or. (ValType( uValor ) == "N" .and. uValor == 0 )
+       endif
+
+       if (  Empty( uValor) .AND. ValType(uValor) <> "L" ) .OR. (ValType( uValor ) == "N" .AND. uValor == 0 )
           uValor := uDefault
        endif
-    
-       try
+
+       BEGIN SEQUENCE WITH __BreakBlock()
           NETDBRLOCK()
           FIELDPUT( nPOSICAO, uValor )
           DBUNLOCK()
-       catch
-          
-       end   
-    
+       RECOVER
+
+       end
+
     endif
- 
+
     DBCLEARFILTER()
- 
+
  RETURN uValor
 
 
@@ -280,18 +280,18 @@ FUNCTION ParametroWhatsApp( cCampo, cFilial, uDefault, uValor )
 
 
  function retornaFil()
-    local cFil := ''
+    local cFil := ""
     local hSession, hData
 
     if USessionReady()
         hSession := UGetSession()
     endif
 
-	if (hData := USession('data_user')) != nil
-		cFil := hData['fil']
-	endif
+    if (hData := USession("data_user")) <> nil
+        cFil := hData["fil"]
+    endif
 
-return cFil 
+return cFil
 
 
 
@@ -309,8 +309,8 @@ return cFil
 function FormataData(dData)
 
     local cData := DtoC(StoD(dData))
-    
-return SubStr(cData, 9, 2) + '/' + SubStr(cData, 6, 2) + '/' + SubStr(cData, 1, 4)
+
+return SubStr(cData, 9, 2) + "/" + SubStr(cData, 6, 2) + "/" + SubStr(cData, 1, 4)
 
 
 
@@ -327,13 +327,13 @@ return SubStr(cData, 9, 2) + '/' + SubStr(cData, 6, 2) + '/' + SubStr(cData, 1, 
 function retornaTipos(nTipo, nSub, nHSub, cCampo)
 
 local aARQS := {}
-local aFiliais := Directory('FIL?????', 'D')
+local aFiliais := Directory("FIL?????", "D")
 local cTipo := StrZero(nTipo, 2) + StrZero(nSub, 2) + StrZero(nHSub, 2)
 
 ADelPack( aFiliais, { |e,i| ! FILE(e[i, 1] + "\ACE090.001") } )
 
 if len(aFiliais) > 0
-    Aadd(aARQS, { '\FIL' + allTrim(RetornaFil()) + "\ACE090.001","TIPOS",, "ICE0901" } )
+    Aadd(aARQS, { "\FIL" + allTrim(RetornaFil()) + "\ACE090.001","TIPOS",, "ICE0901" } )
 else
     Aadd(aARQS, { "ACE090.001", "TIPOS",, "ICE0901" } )
 endif
@@ -355,7 +355,7 @@ else
                 cTipo := Upper(TIPOS->MNU_APRES)
             otherwise
                 cTipo := ""
-        endcase            
+        endcase
     endif
 endif
 

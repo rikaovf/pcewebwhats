@@ -11,6 +11,8 @@ LOCAL hData := {=>}
 
 DEFINE WEB oWeb TITLE 'Login' 
 
+oWeb:cCharset = 'UTF-8'
+
 oWeb:AddCss("files/css/login.css")
 oWeb:AddJs("files/js/login.js")
 
