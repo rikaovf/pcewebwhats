@@ -38,7 +38,7 @@ f:
 
 cd \wsuporte\whatsapp
 
-start WEBWHATS.exe
+WEBWHATS.exe
 
 GOTO EXIT
 
@@ -48,3 +48,4 @@ echo *** Error
 
 :EXIT
 
+exit
