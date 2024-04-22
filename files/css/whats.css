@@ -295,6 +295,14 @@ html ::-webkit-scrollbar-track {
     outline: 0;
 }
 
+.btn_anexo{    
+    margin: 0px 0px 0px 0px;
+    box-shadow: 0 0 0 0;
+    border: 0 none;
+    outline: 0;
+    cursor: pointer;
+}
+
 .btn_sair{
     background-color: inherit;
     margin: -3em 0px 0px
@@ -326,11 +334,21 @@ textarea:focus, input:focus, select:focus {
     margin-right: -1rem
 }
 
+#btn_anexo_svg{
+    margin: 0px 0px 0px 0px;
+    font-size: 2em;
+    margin-left: -0.4em;
+    margin-right: 0.1em;
+}
+
 #btn_sair_svg{
     font-size: 2em;
     margin-right: -1rem
 }
 
+input[type='file'] {
+    display: none
+}
 
 .piscaMensagem{
     border: 3px solid blue !important;

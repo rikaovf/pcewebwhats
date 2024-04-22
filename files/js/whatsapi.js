@@ -115,6 +115,35 @@ function montaChat(msgs){
     //////////
 
 
+    ////////// DIV ANEXO
+    var divAnexo = criaElementoDom('div',
+                                    [['id', 'div_anexo']],
+                                    ['btn_anexo'],
+                                    textoBtn,
+                                    'beforeend');
+
+    var btnAnexo = criaElementoDom('input',
+                                    [['id', 'btn_anexo'], ['type', 'file'], ['accept', 'file/*']],
+                                    ['btn_anexo'],
+                                    divAnexo,
+                                    'beforeend');
+    
+    var btnAnexoImg = criaElementoDom('i',
+                                        [['id', 'btn_anexo_svg']],
+                                        ['bi', 'bi-paperclip']);
+    
+    divAnexo.appendChild(btnAnexoImg);
+
+    divAnexo.addEventListener("click", ()=>{
+        btnAnexo.click();
+    })
+
+    btnAnexo.addEventListener("change", (e)=>{
+        EnviaAnexo(e);
+    })
+    //////////
+
+    
     ////////// DIV INPUT ENVIAR
     var textoEnviar = criaElementoDom('textarea',
                                         [['id', 'texto_input'], ['name', 'Mensagem'], ['rows', 2], ['cols', 50]],
@@ -311,7 +340,7 @@ function insereMensagemDom(msg, divMensagens, quotedMsg, idQuoted, msgFromMe){
 
 
 
-function EnviaMensagem(arq){
+function EnviaMensagem(arq, objMedia){
     
     var textArea = document.querySelector('#texto_input');
     var texto = textArea.value;
@@ -330,7 +359,8 @@ function EnviaMensagem(arq){
             id: rowData.id_serial,
             text: texto != '' ? texto : '',
             type: undefined,
-            media: arq}
+            media: arq,
+            obj: objMedia }
 
             envia = true;
     }
@@ -351,6 +381,37 @@ function EnviaMensagem(arq){
     }
     
     textArea.value = '';
+}
+
+
+
+
+
+
+function EnviaAnexo(t){
+
+    var objMedia = {}
+    var reader  = new FileReader();
+
+    if (!(t.target && t.target.files && t.target.files.length > 0)) {
+        return;
+    }
+    
+    reader.onloadend = function () {
+        let result = reader.result;
+        const indexResult = result.indexOf(';');
+        
+        objMedia.mimetype = result.substr(0, indexResult);
+        objMedia.data = result.substr(indexResult + 8);
+        objMedia.filename = t.target.files[0].name;
+
+        console.log(objMedia);
+        
+        EnviaMensagem(true, objMedia)
+    }
+
+    reader.readAsDataURL(t.target.files[0]);   
+    
 }
 
 
