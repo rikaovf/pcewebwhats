@@ -373,6 +373,10 @@ function EnviaMensagem(arq, objMedia){
 
         fetch(`${config.server}:${config.port}/sendmsg`, options)
         .then(() => {
+            var oPar = new Object();          
+    
+            oPar['idRetag'] = rowData.ID_RETAG;
+            MsgApi('api_brw_whats', 'marcafunc', oPar);
             console.log("Mensagem enviada para " + body.id);
         })
         .catch((err) => {
@@ -464,17 +468,23 @@ function fechaConversa(){
     var conv = document.getElementById('conversa_pai');
     var orcs = document.getElementById('div-orcs');
     
-    if(conv != null){
+    //if(conv != null){
         children = [...element.children]
         children[0].classList.remove('col-5')
         children[0].classList.add('col-11')
 
-        element.removeChild(conv);
-        element.removeChild(orcs);
+        if(conv != null){
+            element.removeChild(conv);
+        }
+
+        if(orcs != null){
+            element.removeChild(orcs);
+        }
+
         rowData = {};
         clearInterval(intervaloAtualiza);
         removeModals();
-    }
+    //}
 }
 
 
@@ -841,6 +851,14 @@ function navegaAteMensagem(idSerialized){
 
 function setTableChats(chats){
     
+    var divTable = [...document.getElementsByClassName("tabulator-tableholder")][0];
+    var tableLoad = typeof(divTable) != 'undefined'
+    
+    if (tableLoad){
+        var scrollX = tableLoad ? divTable.scrollLeft : 0;
+        var scrollY = tableLoad ? divTable.scrollTop : 0;
+    }
+
     intervaloChecaTable = setInterval(()=>{
             if(tableReady){
                 clearInterval(intervaloChecaTable);
@@ -848,7 +866,11 @@ function setTableChats(chats){
                 // vai depender da memória e processamento da máquina o tempo de atualização da tabela abaixo não adianta
                 // por promise pois o método setData do tabulator é sincrono, e acaba travando a interface por alguns segundos.
                 // Se botar pelo pceweb "oDom:TableSetData", ele demora o dobro de tempo, então optei por fazer por aqui.
-                table.setData(chats.chats);
+                table.setData(chats.chats).then(()=>{
+                    if(tableLoad){
+                        divTable.scrollTo( { top: scrollY, left:scrollX } );
+                    } 
+                })
                 /////////
             }
         }, 2000)
@@ -857,6 +879,21 @@ function setTableChats(chats){
 }
 
 
+
+
+
+
+
+
+
+
+function encerraConversa(rowObj){
+    var oPar = new Object();          
+            
+    oPar['idRetag'] = rowObj.ID_RETAG;
+
+    MsgApi('api_brw_whats', 'encerraconversa', oPar);
+}
 
 
 

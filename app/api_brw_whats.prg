@@ -16,6 +16,10 @@ function Api_Brw_whats( oDom )
 			carregaEnviaOrcs( oDom )
 		case oDom:GetProc() == 'preencheorcamentos'
 			preencheEnviaOrcs( oDom )
+		case oDom:GetProc() == 'marcafunc'
+			marcaFunc( oDom )
+		case oDom:GetProc() == 'encerraconversa'
+			encerraConversa( oDom )	
 		case oDom:GetProc() == 'encerrar_sessao'            
 			USessionEnd()
 			URedirect('/')
@@ -246,3 +250,82 @@ function preencheEnviaOrcs (oDom)
 	abre_fecha_arquivos(aArqs, .F.)
 
 return nil
+
+
+
+
+
+
+
+
+procedure marcaFunc( oDom, nIdRetag )
+	local hSession, hData
+	local cIdRetag 
+
+	local aArqs := { {"ACE398.001"  ,,, "ICE3980"} }
+	
+	if ! abre_fecha_arquivos( aArqs, .T. )
+		abre_fecha_arquivos( aArqs, .F. )
+		return
+	endif
+
+	if nIdRetag <> nil
+		cIdRetag := nIdRetag
+	else
+		cIdRetag := oDom:Get('idRetag')
+	endif
+
+	if USessionReady()
+        hSession := UGetSession()
+		hData := Usession( 'data_user' )
+
+		if ace398->(DbSeekOrd(str(cIdRetag,11), "ICE3980"))
+			ace398->(NetRLock())
+			ace398->func_abert := hData['func']
+			ace398->(DbUnlock())
+		endif
+	else
+		oDom:SetError('Erro ao marcar funcionário no chat, faça logout e inicie a sessão novamente!')	
+	endif
+
+	abre_fecha_arquivos( aArqs, .F. )
+	
+return
+
+
+
+
+
+
+procedure encerraConversa( oDom )
+
+	local cIdRetag := oDom:Get('idRetag')
+	local aArqs :=    { {"ACE397.001"  ,,, "ICE39702"},;
+						{"ACE398.001"  ,,, "ICE3980"} }
+
+
+	if ! abre_fecha_arquivos( aArqs, .T. )
+		abre_fecha_arquivos( aArqs, .F. )
+		return
+	endif
+
+	ace397->( setScope(0, str(cIdRetag,11) ) )
+	ace397->( setScope(1, str(cIdRetag,11) ) )
+
+	if ! ace397 -> (DbVazio()) .and. ace398->(DbSeekOrd(str(cIdRetag,11), "ICE3980"))
+		ace397->( DbGoBottom() )
+
+		ace397->(NetRLock())
+		ace398->(NetRLock())
+
+		ace397->situacao := ace398->situacao := _atend_encerrado
+		
+		marcaFunc(, cIdRetag)
+
+		ace397->(DbUnlock())
+		ace398->(DbUnlock())
+	endif
+
+	abre_fecha_arquivos( aArqs, .F. )
+
+return

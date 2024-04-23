@@ -51,6 +51,8 @@ if(typeof(table) == 'undefined'){
         
             element.setAttribute("style", "visibility:visible;");    
             
+            
+            
             table.on("rowClick", function(e, row){
                 if(rowData.length == 0){
                     rowData = row.getData();
@@ -62,6 +64,16 @@ if(typeof(table) == 'undefined'){
                         removeModals();
                         abreMensagens();
                     }
+                }
+            });
+
+
+
+            table.on("rowDblClick", function(e, row){
+                if (confirm("Encerrar conversa?")) {
+                    var auxData = row.getData();
+
+                    encerraConversa(auxData);
                 }
             });
         }
