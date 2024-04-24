@@ -63,7 +63,7 @@ function montaChat(msgs){
 
 
 
-    ////////// FOTO E NOME DO CONTATO
+    ////////// FOTO E NOME DO  - ORÇAMENTOS
     var profilePicContato = criaElementoDom('img',
                                             [['id', 'contato-foto'],['src', '../../data/whats-contato.png'],['alt', 'Profile Picture']],
                                             ['contato-foto'],
@@ -659,10 +659,16 @@ function removeModals(){
 function solicitaOrcApi(){
     const divConversaPai = document.getElementById('conversa_pai');
     const listaOrcAberto = document.getElementById('lista-orcs');
-    
+    const chatList = [...element.children][0]
+
     if (! listaOrcAberto){
+        chatList.classList.remove('col-5')
+        chatList.classList.add('col-2')
+        /*children[0].classList.remove('col-11')
+        children[0].classList.add('col-5')
+
         divConversaPai.classList.remove('col-7');
-        divConversaPai.classList.add('col-4');
+        divConversaPai.classList.add('col-4');*/
 
         const divOrc = criaElementoDom('div',
                                       [['id', 'div-orcs']], ['col-3', 'borda_caixa_conv', 'div-orcs'],
@@ -688,8 +694,10 @@ function solicitaOrcApi(){
             
             element.removeChild(elementChildNodes[4]);
             
-            divConversaPai.classList.remove('col-4');
-            divConversaPai.classList.add('col-7');
+            chatList.classList.remove('col-2')
+            chatList.classList.add('col-5')
+            /*divConversaPai.classList.remove('col-4');
+            divConversaPai.classList.add('col-7');*/
         }
         
     }

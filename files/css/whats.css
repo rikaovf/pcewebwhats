@@ -162,7 +162,7 @@ html ::-webkit-scrollbar-track {
     height: max-content;
     contain: content;
     border: 0.1px solid lightgray;
-    font-size: 1.4vh;
+    font-size: 1.7vh;
 }
 
 .fromMe{
