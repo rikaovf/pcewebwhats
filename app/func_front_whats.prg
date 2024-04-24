@@ -332,7 +332,7 @@ local cTipo := StrZero(nTipo, 2) + StrZero(nSub, 2) + StrZero(nHSub, 2)
 
 ADelPack( aFiliais, { |e,i| ! FILE(e[i, 1] + "\ACE090.001") } )
 
-if len(aFiliais) > 0
+if len(aFiliais) > 0 .and. !ParametroLogico("NaoConsideraFiliais90")
     Aadd(aARQS, { '\FIL' + allTrim(RetornaFil()) + "\ACE090.001","TIPOS",, "ICE0901" } )
 else
     Aadd(aARQS, { "ACE090.001", "TIPOS",, "ICE0901" } )

@@ -1,3 +1,8 @@
+body{
+    min-height: 100vh;
+    background-color: #a7a7a7;
+}
+
 .header{
     display: flex;
     height: 5.5em;
@@ -11,11 +16,6 @@
     margin-left: 20%;
     background-image: url('../../data/whatsconcentra-sem-sombra.png'); 
     background-repeat: no-repeat;
-}
-
-
-body{
-    background-color: #a7a7a7;
 }
 
 html ::-webkit-scrollbar {
@@ -328,17 +328,18 @@ textarea:focus, input:focus, select:focus {
     outline: 0;
 }
 
-#btn_enviar_svg{
-    margin:0px -1rem 0px 0px;
-    font-size: 1.5em;
-    margin-right: -1rem
-}
-
 #btn_anexo_svg{
     margin: 0px 0px 0px 0px;
-    font-size: 2em;
     margin-left: -0.4em;
     margin-right: 0.1em;
+    font-size: 3vh;
+}    
+
+#btn_enviar_svg{
+    margin:0px -1rem 0px 0px;
+    font-size: 1.3em;
+    margin-right: -1rem
+    font-size: 3vh;
 }
 
 #btn_sair_svg{
@@ -379,3 +380,44 @@ audio {
         background-color: inherit !important;
     }
   }*/
+
+
+
+
+
+
+/*@media only screen and (max-height: 700px) {
+    #btn_anexo_svg{
+        font-size: 1.2em;
+    }    
+}
+
+@media only screen and (max-height: 800px) {
+    #btn_anexo_svg{
+        font-size: 1.3em;
+    }    
+}
+
+@media only screen and (max-height: 900px) {
+    #btn_anexo_svg{
+        font-size: 1.5em;
+    }    
+}
+
+@media only screen and (max-height: 1000px) {
+    #btn_anexo_svg{
+        font-size: 1.6em;
+    }    
+}
+
+@media only screen and (max-height: 1100px) {
+    #btn_anexo_svg{
+        font-size: 1.7em;
+    }    
+}
+
+@media only screen and (max-height: 1300px) {
+    #btn_anexo_svg{
+        font-size: 1.7em;
+    }
+}*/
