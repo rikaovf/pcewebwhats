@@ -234,25 +234,11 @@ function insereMensagemDom(msg, divMensagens, quotedMsg, idQuoted, msgFromMe){
         
         if (!quotedMsg){        
 
+            if(typeof(msg.body) == 'undefined' || msg.body != ''){
+                msg.body = arrumaTextoMsg(msg.body);
+            }
+
             if(msg.type == 'chat' || msg.type == 'revoked'){
-                var quebraBody = Math.floor(msg.body.length / 29);
-                var aQuebras = [];
-                var aux = '';
-
-                // "GAMBIARRA" para quebrar strings e aparecer melhor na conversa. o TWEB enche de bootstrap a pagina, sendo assim impossível conseguir arrumar
-                // as linhas para que quebrem as palavras e fiquem do tamanho desejado nos estilos CSS.
-                if(msg.body.length > 29){
-                    for(var n = 0; n <= quebraBody; n++){
-                        aQuebras.push(msg.body.substr( n==0 ? 0 : (n*29), 29));
-                    }
-
-                    aQuebras.map((x)=>{
-                        aux += x + '\n';    
-                    })
-                    
-                    msg.body = aux
-                }
-                
                 elementoMsg = criaElementoDom('p', [['data-id', msg.id.id]], classmsg, divMensagens, 'beforeend', msg.type == 'revoked' ? '🚫 Mensagem apagada' : msg.body, timeMsg);
             } else{
                 switch(msg.type){
@@ -533,6 +519,57 @@ function fechaConversa(){
         clearInterval(intervaloAtualiza);
         removeModals();
     //}
+}
+
+
+
+// "GAMBIARRA" para quebrar strings e aparecer melhor na conversa. o TWEB enche de bootstrap a pagina, sendo assim impossível conseguir arrumar
+// as linhas para que quebrem as palavras e fiquem do tamanho desejado nos estilos CSS.
+function arrumaTextoMsg(texto){
+
+    var qtdReferencia = retornaReferenciaResolucao(window.innerWidth);
+    var quebraBody = Math.floor(texto.length / qtdReferencia);
+    var aQuebras = [];
+    var aux = '';
+
+    if(texto.length > qtdReferencia){
+        for(var n = 0; n <= quebraBody; n++){
+            aQuebras.push(texto.substr( n==0 ? 0 : (n*qtdReferencia), qtdReferencia));
+        }
+
+        aQuebras.map((x)=>{
+            aux += x + '\n';    
+        })
+    } else{
+        aux = texto;
+    }
+
+    return aux;
+}
+
+
+
+
+
+function retornaReferenciaResolucao(largura){
+    var larguraSelecionada = 0;
+    
+    if(largura > 1210){
+        larguraSelecionada = 57;
+    }else if(largura > 1110 && largura < 1210){
+        larguraSelecionada = 47; 
+    }else if(largura > 1010 && largura < 1110){
+        larguraSelecionada = 40;
+    }else if(largura > 910 && largura < 1010){
+        larguraSelecionada = 32;
+    }else{
+        larguraSelecionada = 29;
+    }
+
+    console.log(largura);
+    console.log(larguraSelecionada);
+
+    return larguraSelecionada;
 }
 
 
