@@ -167,7 +167,6 @@ html ::-webkit-scrollbar-track {
     contain: content;
     border: 0.1px solid lightgray;
     font-size: 1.7vh;
-    padding-bottom: 2vh !important;
 }
 
 .opMsg{
@@ -222,9 +221,6 @@ html ::-webkit-scrollbar-track {
 }
 
 .msgQuote{
-    min-width: 58%;
-    max-width: 58%;
-    word-wrap: break-word;
     background-color: #8a8989;
     border-top: 2px solid black;
     border-left: 2px solid black;
@@ -233,7 +229,6 @@ html ::-webkit-scrollbar-track {
     width: max-content;
     margin-bottom: -6px;
     margin-left: 5px;
-    padding: 1vh 1vh;
     cursor: pointer;
 }
 

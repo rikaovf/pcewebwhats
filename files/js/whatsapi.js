@@ -204,6 +204,7 @@ function insereMensagemDom(msg, divMensagens, quotedMsg, idQuoted, msgFromMe){
     var tsMsg = new Date(( typeof(msg.timestamp) != 'undefined' ? msg.timestamp : 915062400) * 1000);
     var dateMsg = tsMsg.toLocaleDateString("pt-BR");
     var timeMsg = tsMsg.toLocaleTimeString("pt-BR");
+    var elementoMsg = undefined;
     
     if (msg.hasQuotedMsg && !quotedMsg){        
         insereMensagemDom(msg._data.quotedMsg, divMensagens, true, msg._data.quotedStanzaID, msg.fromMe)
@@ -234,18 +235,36 @@ function insereMensagemDom(msg, divMensagens, quotedMsg, idQuoted, msgFromMe){
         if (!quotedMsg){        
 
             if(msg.type == 'chat' || msg.type == 'revoked'){
-                criaElementoDom('p', [['data-id', msg.id.id]], classmsg, divMensagens, 'beforeend', msg.type == 'revoked' ? '🚫 Mensagem apagada' : msg.body, timeMsg);
+                var quebraBody = Math.floor(msg.body.length / 29);
+                var aQuebras = [];
+                var aux = '';
+
+                // "GAMBIARRA" para quebrar strings e aparecer melhor na conversa. o TWEB enche de bootstrap a pagina, sendo assim impossível conseguir arrumar
+                // as linhas para que quebrem as palavras e fiquem do tamanho desejado nos estilos CSS.
+                if(msg.body.length > 29){
+                    for(var n = 0; n <= quebraBody; n++){
+                        aQuebras.push(msg.body.substr( n==0 ? 0 : (n*29), 29));
+                    }
+
+                    aQuebras.map((x)=>{
+                        aux += x + '\n';    
+                    })
+                    
+                    msg.body = aux
+                }
+                
+                elementoMsg = criaElementoDom('p', [['data-id', msg.id.id]], classmsg, divMensagens, 'beforeend', msg.type == 'revoked' ? '🚫 Mensagem apagada' : msg.body, timeMsg);
             } else{
                 switch(msg.type){
                     case 'image':
                         classmsg.push('imgMsg');
-                        criaElementoDom('img', [['data-id', msg.id.id], ['id', idSerialized], ['src', '']], classmsg, divMensagens, 'beforeend', msg.body);
+                        elementoMsg = criaElementoDom('img', [['data-id', msg.id.id], ['id', idSerialized], ['src', '']], classmsg, divMensagens, 'beforeend', msg.body);
                         downloadInsereMedia(idSerialized, msg.type)
                         
                         break;
                     case 'video':
                         classmsg.push('videoMsg');
-                        criaElementoDom('video', [['data-id', msg.id.id], ['id', idSerialized], ['src', ''], ['controls', '']], classmsg, divMensagens, 'beforeend', msg.body);
+                        elementoMsg = criaElementoDom('video', [['data-id', msg.id.id], ['id', idSerialized], ['src', ''], ['controls', '']], classmsg, divMensagens, 'beforeend', msg.body);
                         downloadInsereMedia(idSerialized, msg.type)
                         
                         break;
@@ -259,6 +278,7 @@ function insereMensagemDom(msg, divMensagens, quotedMsg, idQuoted, msgFromMe){
                         var audio = criaElementoDom('audio', [['src', ''], ['controls', '']], [], audioElement, 'beforeend');
                         carregaAudio(audio, idSerialized);
                         
+                        elementoMsg = audioElement;
                         break;
                     case 'document':
                         classmsg.push('docMsg', 'bi', msg._data.mimetype == 'application/pdf' ? 'bi-filetype-pdf' : 'bi-file-earmark-word');
@@ -268,11 +288,13 @@ function insereMensagemDom(msg, divMensagens, quotedMsg, idQuoted, msgFromMe){
 
                         var docElement = criaElementoDom('a', [['data-id', msg.id.id], ['id', idSerialized]], classmsg, divMensagens, 'beforeend', msg.body, timeMsg);
                         downloadDoc(idSerialized, docElement, msg._data.caption, msg.fromMe);
+
+                        elementoMsg = docElement;
                         
                         break;
                     case 'sticker':
                         classmsg.push('stickerMsg');
-                        criaElementoDom('img', [['data-id', msg.id.id], ['id', idSerialized], ['src', '']], classmsg, divMensagens, 'beforeend', msg.body);
+                        elementoMsg = criaElementoDom('img', [['data-id', msg.id.id], ['id', idSerialized], ['src', '']], classmsg, divMensagens, 'beforeend', msg.body);
                         downloadInsereMedia(idSerialized, msg.type);
                         
                         break;
@@ -285,6 +307,32 @@ function insereMensagemDom(msg, divMensagens, quotedMsg, idQuoted, msgFromMe){
                         //console.log('Tipo não suportado:\nid: ' + msg.id.id + '\ntype: ' + msg.type);
                 }
             }
+
+            //Cria a "setinha" das mensagens, onde descerá opçoes futuras de encaminhar/excluir/responder.
+            if (typeof(elementoMsg) != 'undefined'){
+                var opcoesMsg = criaElementoDom('i',
+                                             [['id', 'btn_opMsg'], ['style', 'display:none']],
+                                             ['bi', 'bi-caret-down-fill', 'opMsg', 'displayOp'],
+                                             elementoMsg,
+                                             'beforeend');
+
+                elementoMsg.addEventListener('mouseover', (evt)=>{
+                    opcoesMsg.style.display = 'block'
+                })
+                
+                elementoMsg.addEventListener('mouseleave', (evt)=>{
+                    opcoesMsg.style.display = 'none'
+                })
+
+                opcoesMsg.addEventListener('click', (evt)=>{
+                    //opçoes aqui
+                })
+
+
+            }
+            
+            
+            
         } else{
             var classQt = ['msgQuote']
 
@@ -294,23 +342,23 @@ function insereMensagemDom(msg, divMensagens, quotedMsg, idQuoted, msgFromMe){
 
             switch(msg.type){
                 case 'image':
-                    msgQt = criaElementoDom('p', [['data-id', idSerialized]], classQt, divMensagens, 'beforeend', '📷 Foto - ' + msg.body);
+                    msgQt = criaElementoDom('p', [['data-id', idSerialized]], classQt, divMensagens, 'beforeend', '     📷 Foto     ');
                     
                     break;
                 case 'video':
-                    msgQt = criaElementoDom('p', [['data-id', idSerialized]], classQt, divMensagens, 'beforeend', '🎥 Vídeo - ' + msg.body);
+                    msgQt = criaElementoDom('p', [['data-id', idSerialized]], classQt, divMensagens, 'beforeend', '     🎥 Vídeo     ');
                     
                     break;
                 case 'ptt':
-                    msgQt = criaElementoDom('p', [['data-id', idSerialized]], classQt, divMensagens, 'beforeend', '🎵 Áudio - ' + msg.body);
+                    msgQt = criaElementoDom('p', [['data-id', idSerialized]], classQt, divMensagens, 'beforeend', '     🎵 Áudio     ');
 
                     break;
                 case 'document':
-                    msgQt = criaElementoDom('p', [['data-id', idSerialized]], classQt, divMensagens, 'beforeend', '📄 Documento - ' + msg.body);
+                    msgQt = criaElementoDom('p', [['data-id', idSerialized]], classQt, divMensagens, 'beforeend', '     📄 Documento     ');
 
                     break;
                 case 'sticker':
-                    msgQt = criaElementoDom('p', [['data-id', idSerialized]], classQt, divMensagens, 'beforeend', '📲 Figurinha - ' + msg.body);
+                    msgQt = criaElementoDom('p', [['data-id', idSerialized]], classQt, divMensagens, 'beforeend', '     📲 Figurinha     ');
                 
                     break;
                 case 'ciphertext':
@@ -326,7 +374,7 @@ function insereMensagemDom(msg, divMensagens, quotedMsg, idQuoted, msgFromMe){
             msgQt.addEventListener('click', () => {
                 navegaAteMensagem(idSerialized);
             })
-    }
+        }    
     }
     return;
 }
