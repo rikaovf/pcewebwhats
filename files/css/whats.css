@@ -59,6 +59,10 @@ html ::-webkit-scrollbar-track {
     overflow: hidden;
 }
 
+.tabulator .tabulator-tableholder .tabulator-table {
+    font-size: 1.7vh !important;
+}
+
 #container-whats{
     width: 100%;
     height: 75vh;
@@ -88,7 +92,7 @@ html ::-webkit-scrollbar-track {
     display: flex;
     flex-wrap: wrap;
     align-content: center;
-    font-size: 2vh;
+    font-size: 2.5vh;
     /*font-size: 1.5em;*/
 }
 
@@ -105,7 +109,7 @@ html ::-webkit-scrollbar-track {
     display: flex;
     flex-wrap: wrap;
     align-content: center;
-    font-size: 1.5em;
+    font-size: 3vh;
     color: #d3d3d3;
 }
 
@@ -122,14 +126,14 @@ html ::-webkit-scrollbar-track {
     background-color: #9fb2d5;
     color: darkslategrey;
     cursor: pointer;
-    font-size: smaller;
+    font-size: 1vh;
     font-variant: petite-caps;
     font-weight: bold;
     margin-top: 5px;
     margin-bottom: 3px;
     border-radius: 10px;
-    height: 50px;
-    width: 120px;
+    height: 4vh;
+    width: 8vh;
     
     &:hover{
         border: 2px solid #060606;
@@ -166,7 +170,7 @@ html ::-webkit-scrollbar-track {
 }
 
 .fromMe{
-    margin-left: 12vh !important;
+    margin-left: auto !important;
 }
 
 /*.mediaFromMe{
@@ -190,23 +194,25 @@ html ::-webkit-scrollbar-track {
 .horarioMsg{
     position: absolute;
     color: #494646;
-    font-size: 1vh;
+    font-size: 1.2vh;
+    letter-spacing: 1px;
     height: 1vh;
     width: 5.5vh;
-    bottom: -1.3vh;
-    right: -1vh;
+    bottom: -0.4vh;
+    right: 0vh;
 }
 
-/*.horarioMsgAudio{
+.horarioMsgAudio{
     margin-top: 22%;
     margin-left: 76%;
-}*/
+}
 
 .msgQuote{
     background-color: lightgray;
     border-top: 2px solid lightgray;
     border-left: 2px solid lightgray;
     border-radius: 5px;
+    font-size: 1.7vh;
     width: max-content;
     margin-bottom: -6px;
     margin-left: 5px;
@@ -342,14 +348,14 @@ textarea:focus, input:focus, select:focus {
 
 #btn_enviar_svg{
     margin:0px -1rem 0px 0px;
-    font-size: 1.3em;
+    font-size: 3vh;
     margin-right: -1rem
     font-size: 3vh;
 }
 
 #btn_sair_svg{
-    font-size: 2em;
-    margin-right: -1rem
+    font-size: 4vh;
+    margin-right: -1vh;
 }
 
 input[type='file'] {
@@ -361,9 +367,9 @@ input[type='file'] {
 }
 
 audio {
-    margin-right: 3em;
-    width: calc(100% - 3em);
-    height: 1.5em;
+    margin-bottom: 2vh;
+    width: 70vh;
+    height: 5vh;
 }
 
 
