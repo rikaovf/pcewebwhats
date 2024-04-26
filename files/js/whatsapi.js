@@ -19,7 +19,7 @@ function abreMensagens(){
         return res.json();
     })
     .then((msgs) =>{
-        console.log(msgs);
+        //console.log(msgs);
         montaChat(msgs);
         intervaloAtualiza = setInterval(()=>{
             atualizaMensagens()
@@ -519,6 +519,9 @@ function fechaConversa(){
             element.removeChild(orcs);
         }
 
+        $('.menuContexto').hide();
+        $("#vincula").remove;
+
         rowData = {};
         clearInterval(intervaloAtualiza);
         removeModals();
@@ -993,12 +996,55 @@ function encerraConversa(){
 }
 
 
+
+
 function apagaConversa(){
 
 }
 
-function vinculaContato(){
 
+
+
+function vinculaContato(){
+    var oPar = new Object();
+
+    var dialogImg = criaElementoDom('dialog', [['id', 'vincula']], ['vinculaContato'], document.querySelector('body'), 'beforeend');
+
+    var btnSairV = criaElementoDom('i', [['id', 'btnSairV']], ['bi', 'bi-x-lg'], dialogImg, 'beforeend');    
+    var nomeV = criaElementoDom('input', [['id', 'nomeV'], ['type', 'text']], [], dialogImg, 'beforeend');    
+    var btnOkV = criaElementoDom('button', [['id', 'btnOkV']], [], dialogImg, 'beforeend', 'Pesquisar');
+
+    $('#vincula').show();
+
+    btnSairV.addEventListener('click', (e)=>{
+        $("#vincula").remove();
+    })
+
+    btnOkV.addEventListener('click', (e)=>{
+        if(nomeV.value != ''){
+            oPar['nome'] = nomeV.value;
+
+            console.log(oPar);
+
+            MsgApi('api_brw_whats', 'vinculacontato', oPar);
+            //$("#vincula").remove();
+        } else{
+            alert('Nome não pode ser vazio!')
+        }
+        
+    })
+}
+
+
+
+function escolherNomeCadastro(objNomes){
+    var nomes = objNomes.nomes;
+
+    nomes.map((x)=>{
+        console.log(x);
+    })
+
+    $("#vincula").remove();
 }
 
 

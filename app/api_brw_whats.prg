@@ -20,6 +20,8 @@ function Api_Brw_whats( oDom )
 			marcaFunc( oDom )
 		case oDom:GetProc() == 'encerraconversa'
 			encerraConversa( oDom )	
+		case oDom:GetProc() == 'vinculacontato'
+			vinculaContato( oDom )	
 		case oDom:GetProc() == 'encerrar_sessao'            
 			USessionEnd()
 			URedirect('/')
@@ -327,5 +329,40 @@ procedure encerraConversa( oDom )
 	endif
 
 	abre_fecha_arquivos( aArqs, .F. )
+
+return
+
+
+
+
+procedure vinculaContato(oDom)	
+
+local nId := 0
+local aNomes := {}
+local hNomes := {=>}
+local cNome := oDom:Get('nome')
+local aARQS := { { "ACE026.001",,, "ICE026"  } }
+
+
+if ! abre_fecha_arquivos(aArqs, .T.)
+	abre_fecha_arquivos(aArqs, .F.)
+	return
+endif
+
+
+
+ace026->(DbGoTop())
+
+Do While ace026->(OrdWildSeek( "*" + Upper(Alltrim(cNome)) + "*", .T. ))
+	aadd(aNomes, {nId, ace026->cli_nom})
+
+	nId++
+EndDo
+
+HB_HSet( hNomes, 'nomes', aNomes )
+
+oDom:SetJs('escolherNomeCadastro', hNomes)
+
+abre_fecha_arquivos(aArqs, .F.)
 
 return

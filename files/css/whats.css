@@ -33,6 +33,55 @@ body{
     background:#eee;
 }
 
+#vincula{
+    display: none;
+    margin: 0 0;
+    background-color: #817777;
+    position: absolute;
+    z-index: 2;
+    top: 30vh;
+    left: 40vh;
+    width: 50vh;
+    height: 15vh;
+    border: 1px solid;
+    border-radius: 5px;
+    opacity: 95%;
+}
+
+#btnSairV
+    {position: absolute;
+    cursor: pointer;
+    top: 0;
+    right: 0;
+    margin: 0.4vh 0.7vh;
+    font-size: 2.2vh;    
+}
+
+
+#nomeV{
+    position: absolute;
+    margin: 0 0;
+    top: 40%;
+    left: 10%;
+    width: 30vh;
+    border: 1px solid;
+    border-radius: 4px;
+}
+
+
+#btnOkV{
+    position: absolute;
+    top: 5.7vh;
+    right: 0;
+    margin-right: 3vh;
+    width: 9vh;
+    height: 3vh;
+    border: 1px solid;
+    border-radius: 5px;
+}
+
+
+
 
 .img-w{
     height: inherit;
