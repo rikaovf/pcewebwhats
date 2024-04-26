@@ -64,11 +64,11 @@ function montaChat(msgs){
 
 
     ////////// FOTO E NOME DO  - ORÇAMENTOS
-    var profilePicContato = criaElementoDom('img',
-                                            [['id', 'contato-foto'],['src', '../../data/whats-contato.png'],['alt', 'Profile Picture']],
-                                            ['contato-foto'],
-                                            contatoPai,
-                                            'beforeend');
+    var btnVoltar = criaElementoDom('i',
+                                    [['id', 'contato-volta']],
+                                    ['bi', 'bi-arrow-left', 'contato-volta'],
+                                    contatoPai,
+                                    'beforeend');
     
                                             
     var identificacaoContato = criaElementoDom('div',
@@ -84,6 +84,10 @@ function montaChat(msgs){
                                             ['contato-orcs', 'bi', 'bi-list-ul'],
                                             contatoPai,
                                             'beforeend');
+
+    btnVoltar.addEventListener('click', ()=>{
+        fechaConversa();
+    })
     //////////
 
 
@@ -311,7 +315,7 @@ function insereMensagemDom(msg, divMensagens, quotedMsg, idQuoted, msgFromMe){
                 })
 
                 opcoesMsg.addEventListener('click', (evt)=>{
-                    //opçoes aqui
+                    
                 })
 
 
@@ -443,7 +447,7 @@ function EnviaAnexo(t){
         objMedia.data = result.substr(indexResult + 8);
         objMedia.filename = t.target.files[0].name;
 
-        console.log(objMedia);
+        //console.log(objMedia);
         
         EnviaMensagem(true, objMedia)
     }
@@ -523,6 +527,9 @@ function fechaConversa(){
 
 
 
+
+
+
 // "GAMBIARRA" para quebrar strings e aparecer melhor na conversa. o TWEB enche de bootstrap a pagina, sendo assim impossível conseguir arrumar
 // as linhas para que quebrem as palavras e fiquem do tamanho desejado nos estilos CSS.
 function arrumaTextoMsg(texto){
@@ -565,9 +572,6 @@ function retornaReferenciaResolucao(largura){
     }else{
         larguraSelecionada = 29;
     }
-
-    console.log(largura);
-    console.log(larguraSelecionada);
 
     return larguraSelecionada;
 }
@@ -980,15 +984,22 @@ function setTableChats(chats){
 
 
 
-function encerraConversa(rowObj){
+function encerraConversa(){
     var oPar = new Object();          
             
-    oPar['idRetag'] = rowObj.ID_RETAG;
+    oPar['idRetag'] = rowData.ID_RETAG;
 
     MsgApi('api_brw_whats', 'encerraconversa', oPar);
 }
 
 
+function apagaConversa(){
+
+}
+
+function vinculaContato(){
+
+}
 
 
 

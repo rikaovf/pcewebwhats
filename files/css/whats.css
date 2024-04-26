@@ -9,6 +9,31 @@ body{
     margin-bottom: 2px;
 }
 
+
+.menuContexto {
+    border: 1px solid #000;
+    position:absolute;
+    z-index:1;
+    font: 11px sans-serif;
+    display:none;
+}
+
+#opContexto {
+    font-size: 1.5vh;
+    text-align: center;
+    background-color: aliceblue;
+    opacity: 95%;
+    padding: 2vh 1vh;
+    width: 20vh;
+    border-bottom: 1px solid #eee;
+    cursor: pointer;
+}
+
+#opContexto:hover {
+    background:#eee;
+}
+
+
 .img-w{
     height: inherit;
     width: 100%;
@@ -96,8 +121,10 @@ html ::-webkit-scrollbar-track {
     /*font-size: 1.5em;*/
 }
 
-.contato-foto{
-    
+.contato-volta{
+    font-size: 3vh;
+    margin-top: 1.2vh;
+    cursor: pointer;
 }
 
 .contato-orcs{

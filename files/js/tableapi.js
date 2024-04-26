@@ -51,7 +51,7 @@ if(typeof(table) == 'undefined'){
         
             element.setAttribute("style", "visibility:visible;");    
             
-            
+            configuraMenuContexto();
             
             table.on("rowClick", function(e, row){
                 if(rowData.length == 0){
@@ -69,13 +69,71 @@ if(typeof(table) == 'undefined'){
 
 
 
-            table.on("rowDblClick", function(e, row){
+            /*table.on("rowDblClick", function(e, row){
                 if (confirm("Encerrar conversa?")) {
                     var auxData = row.getData();
 
                     encerraConversa(auxData);
                 }
-            });
+            });*/
         }
     }, 1000);
+}
+
+
+
+
+async function configuraMenuContexto(){   
+    var bodyElement = document.querySelector('body');    
+    var tableHolder = [...document.getElementsByClassName('tabulator-tableholder')][0];
+    
+    //Div pai das opções menu contexto
+    var menuContexto = criaElementoDom('div',
+                                       [['id', 'menuContexto']],
+                                       ['menuContexto'],
+                                       bodyElement,
+                                       'afterbegin');
+    
+    
+    
+    criaElementoDom('div',
+                    [['id', 'opContexto'], ['name', 'Encerrar'], ['onclick', 'encerraConversa()']],
+                    [],
+                    menuContexto,
+                    'beforeend',
+                    'Encerrar conversa');
+    
+    criaElementoDom('div', 
+                    [['id', 'opContexto'], ['name', 'Apagar'], ['onclick', 'apagaConversa()']],
+                    [],
+                    menuContexto,
+                    'beforeend',
+                    'Apagar conversa');
+
+    criaElementoDom('div',
+                    [['id', 'opContexto'], ['name', 'Vincular'], ['onclick', 'vinculaContato()']],
+                    [],
+                    menuContexto,
+                    'beforeend',
+                    'Vincular contato');
+
+
+
+    tableHolder.addEventListener('contextmenu', (e)=>{
+        var chat = document.elementFromPoint(e.clientX, e.clientY);
+        
+        chat.click();
+
+        $('.menuContexto').css({
+            "margin-left": e.clientX,
+            "margin-top": e.clientY
+        }).show()
+        
+        e.preventDefault();
+
+        window.addEventListener('click', function(){
+            $('.menuContexto').hide();
+        })        
+    })
+
 }
