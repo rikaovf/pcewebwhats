@@ -1013,8 +1013,8 @@ function vinculaContato(){
 
     var btnSairV = criaElementoDom('i', [['id', 'btnSairV']], ['bi', 'bi-x-lg'], dialogImg, 'beforeend');    
     var textoExp = criaElementoDom('p', [['id', 'textoExpV']], [], dialogImg, 'beforeend', 'Digite o nome a ser pesquisado:');    
-    var nomeV = criaElementoDom('input', [['id', 'nomeV'], ['type', 'text']], [], dialogImg, 'beforeend');    
-    var btnOkV = criaElementoDom('button', [['id', 'btnOkV']], [], dialogImg, 'beforeend', 'Pesquisar');
+    var nomeV = criaElementoDom('input', [['id', 'nomeV'], ['type', 'text']], ['nomeV'], dialogImg, 'beforeend');    
+    var btnOkV = criaElementoDom('button', [['id', 'btnOkV']], ['btnOkV'], dialogImg, 'beforeend', 'Pesquisar');
 
     $('#vincula').show();
 
@@ -1025,8 +1025,6 @@ function vinculaContato(){
     btnOkV.addEventListener('click', (e)=>{
         if(nomeV.value != ''){
             oPar['nome'] = nomeV.value;
-
-            console.log(oPar);
 
             MsgApi('api_brw_whats', 'vinculacontato', oPar);
         } else{
@@ -1040,42 +1038,36 @@ function vinculaContato(){
 
 
 function escolherNomeCadastro(objNomes){
+    var oPar = new Object();
     var nomes = objNomes.nomes;
 
-    nomes.map((x)=>{
-        console.log(x);
-    })
-
-    var oPar = new Object();
-
-    var dialogImg = criaElementoDom('dialog', [['id', 'vincula']], ['vinculaContato'], document.querySelector('body'), 'beforeend');
-
-    var btnSairV = criaElementoDom('i', [['id', 'btnSairV']], ['bi', 'bi-x-lg'], dialogImg, 'beforeend');    
-    var nomeV = criaElementoDom('input', [['id', 'nomeV'], ['type', 'text']], [], dialogImg, 'beforeend');    
-    var btnOkV = criaElementoDom('button', [['id', 'btnOkV']], [], dialogImg, 'beforeend', 'Pesquisar');
-
-    $('#vincula').show();
-
-    btnSairV.addEventListener('click', (e)=>{
-        $("#vincula").remove();
-    })
-
-    btnOkV.addEventListener('click', (e)=>{
-        if(nomeV.value != ''){
-            oPar['nome'] = nomeV.value;
-
-            console.log(oPar);
-
-            MsgApi('api_brw_whats', 'vinculacontato', oPar);
-            //$("#vincula").remove();
-        } else{
-            errorMsg('Nome não pode ser vazio!');
-            //alert('Nome não pode ser vazio!')
-        }
+    if(nomes.length > 0){
+        $("#textoExpV")[0].innerText = 'Selecione o cadastro a ser vinculado:'
         
-    })
+        $("#nomeV").remove();
+        $("#btnOkV").remove();
+        
+        var comboCad = criaElementoDom('select', [['id', 'selV']], ['nomeV'], $('#vincula')[0], 'beforeend');    
+        criaElementoDom('button', [['id', 'selOkV']], ['btnOkV'], $('#vincula')[0], 'beforeend', 'Selecionar');
 
-    $("#vincula").remove();
+        nomes.map((x)=>{
+            criaElementoDom('option', [ ['value', x[0]] ], [], comboCad, 'beforeend', x[1]);
+        })
+        
+        $('#selOkV')[0].addEventListener('click', ()=>{
+            oPar['idRetag'] = rowData.ID_RETAG;
+            oPar['nomeCli'] = nomes[comboCad.value][1];
+            oPar['chaveCli'] = nomes[comboCad.value][2];
+
+            MsgApi('api_brw_whats', 'vinculachavecli', oPar);
+            $('#vincula').remove();
+        })
+     } else{
+        errorMsg('Não existem cadastros que coincidem com o nome digitado!', 'Atenção');
+        $('#vincula').remove();
+     }
+
+    
 }
 
 

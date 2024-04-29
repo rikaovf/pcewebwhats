@@ -1,3 +1,15 @@
+function errorMsgApi(objErro){
+
+    if(objErro.erro[2] != ''){
+        $('#contato-nome')[0].innerText = objErro.erro[2];
+    }
+
+    errorMsg(objErro.erro[0], objErro.erro[1]);
+
+}
+
+
+
 function errorMsg(erro, titulo){
     var dlgErro = document.getElementById('dlgErro');
     var bodyElm = [...document.getElementsByTagName('body')][0];
@@ -7,7 +19,7 @@ function errorMsg(erro, titulo){
         var titErro = document.getElementById('titErro');
         var msgErro = document.getElementById('msgErro');
 
-        if(typeof(titErro) != 'undefined'){
+        if(typeof(titulo) != 'undefined'){
             titErro.innerText = titulo;
         }
 
@@ -19,7 +31,7 @@ function errorMsg(erro, titulo){
         var boxDlg = criaElementoDom('div', [['id', 'boxDlg']], ['boxDlg'], dlgErro, 'afterbegin');
         var btnErro = criaElementoDom('i', [['id', 'btnErro']], ['bi', 'bi-x-lg', 'btnErro'], boxDlg, 'beforeend');
     
-        criaElementoDom('p', [['id', 'titErro']], ['titErro'], boxDlg, 'beforeend', 'Erro');
+        criaElementoDom('p', [['id', 'titErro']], ['titErro'], boxDlg, 'beforeend', typeof(titulo) != 'undefined' ? titulo : 'Erro');
         criaElementoDom('hr', [[]], ['sepErro'], boxDlg, 'beforeend');
         
         criaElementoDom('p', [['id', 'msgErro']], ['msgErro'], boxDlg, 'beforeend', erro);    

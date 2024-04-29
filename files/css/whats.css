@@ -62,7 +62,7 @@ body{
 }
 
 
-#nomeV{
+.nomeV{
     position: absolute;
     margin-top: 5.5vh;
     left: 10%;
@@ -73,7 +73,7 @@ body{
 }
 
 
-#btnOkV{
+.btnOkV{
     position: absolute;
     margin-top: 5.4vh;
     right: 0;
