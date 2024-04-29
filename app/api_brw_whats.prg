@@ -354,7 +354,7 @@ endif
 ace026->(DbGoTop())
 
 Do While ace026->(OrdWildSeek( "*" + Upper(Alltrim(cNome)) + "*", .T. ))
-	aadd(aNomes, {nId, ace026->cli_nom})
+	aadd(aNomes, {nId, ace026->cli_nom, ace026->cli_chave})
 
 	nId++
 EndDo

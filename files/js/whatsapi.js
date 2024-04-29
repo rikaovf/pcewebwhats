@@ -878,7 +878,8 @@ function PreencheOrcs(){
         }        
 
     } else{
-        alert('Erro na listagem de orçamentos, feche a conversa e abra novamente!');
+        errorMsg('Erro na listagem de orçamentos, feche a conversa e abra novamente!')
+        //alert('Erro na listagem de orçamentos, feche a conversa e abra novamente!');
     }
     
 }
@@ -1011,6 +1012,45 @@ function vinculaContato(){
     var dialogImg = criaElementoDom('dialog', [['id', 'vincula']], ['vinculaContato'], document.querySelector('body'), 'beforeend');
 
     var btnSairV = criaElementoDom('i', [['id', 'btnSairV']], ['bi', 'bi-x-lg'], dialogImg, 'beforeend');    
+    var textoExp = criaElementoDom('p', [['id', 'textoExpV']], [], dialogImg, 'beforeend', 'Digite o nome a ser pesquisado:');    
+    var nomeV = criaElementoDom('input', [['id', 'nomeV'], ['type', 'text']], [], dialogImg, 'beforeend');    
+    var btnOkV = criaElementoDom('button', [['id', 'btnOkV']], [], dialogImg, 'beforeend', 'Pesquisar');
+
+    $('#vincula').show();
+
+    btnSairV.addEventListener('click', (e)=>{
+        $("#vincula").remove();
+    })
+
+    btnOkV.addEventListener('click', (e)=>{
+        if(nomeV.value != ''){
+            oPar['nome'] = nomeV.value;
+
+            console.log(oPar);
+
+            MsgApi('api_brw_whats', 'vinculacontato', oPar);
+        } else{
+            errorMsg('Nome não pode ser vazio!');
+            //alert('Nome não pode ser vazio!')
+        }
+        
+    })
+}
+
+
+
+function escolherNomeCadastro(objNomes){
+    var nomes = objNomes.nomes;
+
+    nomes.map((x)=>{
+        console.log(x);
+    })
+
+    var oPar = new Object();
+
+    var dialogImg = criaElementoDom('dialog', [['id', 'vincula']], ['vinculaContato'], document.querySelector('body'), 'beforeend');
+
+    var btnSairV = criaElementoDom('i', [['id', 'btnSairV']], ['bi', 'bi-x-lg'], dialogImg, 'beforeend');    
     var nomeV = criaElementoDom('input', [['id', 'nomeV'], ['type', 'text']], [], dialogImg, 'beforeend');    
     var btnOkV = criaElementoDom('button', [['id', 'btnOkV']], [], dialogImg, 'beforeend', 'Pesquisar');
 
@@ -1029,19 +1069,10 @@ function vinculaContato(){
             MsgApi('api_brw_whats', 'vinculacontato', oPar);
             //$("#vincula").remove();
         } else{
-            alert('Nome não pode ser vazio!')
+            errorMsg('Nome não pode ser vazio!');
+            //alert('Nome não pode ser vazio!')
         }
         
-    })
-}
-
-
-
-function escolherNomeCadastro(objNomes){
-    var nomes = objNomes.nomes;
-
-    nomes.map((x)=>{
-        console.log(x);
     })
 
     $("#vincula").remove();

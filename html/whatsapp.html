@@ -116,6 +116,7 @@
 		ENDFORM o
 
 		oWeb:AddJs("files/js/tableapi.js")
+		oWeb:AddJs("files/js/dlgerro.js")
 	
 		INIT WEB oWeb RETURN
 ?>
