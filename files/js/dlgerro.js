@@ -1,6 +1,6 @@
 function errorMsgApi(objErro){
 
-    if(objErro.erro.lenght > 2){
+    if(typeof(objErro.erro[2]) != 'undefined' && objErro.erro[2] != ''){
         $('#contato-nome')[0].innerText = objErro.erro[2];
     }
 

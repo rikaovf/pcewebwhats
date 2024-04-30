@@ -417,7 +417,7 @@ procedure deletaConversa( oDom )
     local hResult := {=>}
     local nId := oDom:Get("idRetag")
 
-    local aARQS := { { "ACE398.001",,, "ICE3980" }, { "ACE397.001",,, "ICE3971" } }
+    local aARQS := { { "ACE398.001",,, "ICE3980" }, { "ACE397.001",,, "ICE3974" } }
 
     hData := USession("data_user")
 

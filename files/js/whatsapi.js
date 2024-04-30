@@ -502,9 +502,11 @@ function criaElementoDom(tipo, atributos, classes, elementoInsert, posicaoInsert
 
 
 
-function fechaConversa(){
+function fechaConversa(fechaDialog){
     var conv = document.getElementById('conversa_pai');
     var orcs = document.getElementById('div-orcs');
+
+    fechaDialog = typeof(fechaDialog) != 'undefined' ? false : true;
     
     //if(conv != null){
         children = [...element.children]
@@ -524,7 +526,10 @@ function fechaConversa(){
 
         rowData = {};
         clearInterval(intervaloAtualiza);
-        removeModals();
+        
+        if(fechaDialog){
+            removeModals();
+        }
     //}
 }
 
@@ -1013,6 +1018,7 @@ function deleteChat(){
         MsgApi('api_brw_whats', 'deletaconversa', oPar);
 
         $('#dlgSimNao').remove();
+        fechaConversa(false);
     })
     .catch((err) => {
         console.log(err);
