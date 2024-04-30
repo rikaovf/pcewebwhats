@@ -22,6 +22,8 @@ function Api_Brw_whats( oDom )
             vinculaContato( oDom )
         case oDom:GetProc() == "vinculachavecli"
             vinculaChaveCli( oDom )
+        case oDom:GetProc() == "deletaconversa"
+            deletaConversa( oDom )
         case oDom:GetProc() == "encerrar_sessao"
             USessionEnd()
             URedirect("/")
@@ -393,10 +395,64 @@ procedure vinculaChaveCli(oDom)
 
         HB_HSet( hErro, "erro", {"Contato vinculado com sucesso", "Sucesso", allTrim(cNomeCli)} )
     else
-        HB_HSet( hErro, "erro", {"Erro ao vincular cadastro", "Erro"} )
+        HB_HSet( hErro, "erro", {"Erro ao vincular cadastro", "Erro", ""} )
     endif
 
     oDom:SetJs("errorMsgApi", hErro)
+
+    abre_fecha_arquivos(aArqs, .F.)
+
+return
+
+
+
+
+
+
+
+
+
+procedure deletaConversa( oDom )
+    local hData
+    local hResult := {=>}
+    local nId := oDom:Get("idRetag")
+
+    local aARQS := { { "ACE398.001",,, "ICE3980" }, { "ACE397.001",,, "ICE3971" } }
+
+    hData := USession("data_user")
+
+    if ! abre_fecha_arquivos(aArqs, .T.)
+        abre_fecha_arquivos(aArqs, .F.)
+        return
+    endif
+
+    ace398->(DbGoTop())
+
+    if ace398->( dbSeek(str(nId, 11)) )
+        ace398->(netRlock())
+        ace398->(dbDelete())
+        ace398->(dbUnlock())
+
+        ace397->( setScope(0, str(ace398->id_retag,11) ) )
+        ace397->( setScope(1, str(ace398->id_retag,11) ) )
+        ace397->( DbGoTop() )
+
+        while !ace397->(Eof())
+            ace397->(netRlock())
+            ace397->(dbDelete())
+            ace397->(dbUnlock())
+
+            ace397->( DbSkip() )
+        enddo
+
+        GravaLogWhatsapp ("Chat Excluido: " + ace398->n_whatsapp + " - " + DTOC(DATE()) + "-" + TIME() + " por: " + ALLTRIM( CODTODES( "F"+hData["func"], "ACE004.001","ICE004","TAB_DES")) )
+
+        HB_HSet( hResult, "erro", {"Chat apagado com sucesso", "Sucesso"} )
+    else
+        HB_HSet( hResult, "erro", {"Erro ao apagar chat da base de dados da concentra", "Erro"} )
+    endif
+
+    oDom:SetJs("errorMsgApi", hResult)
 
     abre_fecha_arquivos(aArqs, .F.)
 

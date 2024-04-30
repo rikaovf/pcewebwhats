@@ -484,6 +484,28 @@ audio {
     height: 5vh;
 }
 
+.dlgSimNao{
+    position: absolute;
+    margin-left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: black;
+    opacity: 95%;
+    z-index: 11;
+}
+
+.btnSimNao{
+    position: relative;
+    left: 40vh;
+    bottom: 4vh;
+    width: 12vh;
+    height: 3.5vh;
+    margin-right: 1vh;
+    border: none;
+    font-size: 2.2vh;
+    background-color: #adadad;
+}
+
 .dlgErro{
     position: absolute;
     margin-left: 0;

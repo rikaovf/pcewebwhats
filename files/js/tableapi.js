@@ -104,7 +104,7 @@ async function configuraMenuContexto(){
                     'Encerrar conversa');
     
     criaElementoDom('div', 
-                    [['id', 'opContexto'], ['name', 'Apagar'], ['onclick', 'apagaConversa()']],
+                    [['id', 'opContexto'], ['name', 'Apagar'], ['onclick', "msgSimNao('O chat será apagado tambem da base de dados da concentra!', 'Deseja apagar chat?')"]],
                     [],
                     menuContexto,
                     'beforeend',

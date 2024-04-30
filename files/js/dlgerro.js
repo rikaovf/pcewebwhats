@@ -1,6 +1,6 @@
 function errorMsgApi(objErro){
 
-    if(objErro.erro[2] != ''){
+    if(objErro.erro.lenght > 2){
         $('#contato-nome')[0].innerText = objErro.erro[2];
     }
 
@@ -40,4 +40,46 @@ function errorMsg(erro, titulo){
             dlgErro.style.display = 'none';
         })        
     }
+}
+
+
+
+
+
+
+
+function msgSimNao(msg, titulo){
+    var dlgSimNao = document.getElementById('dlgSimNao');
+    var bodyElm = [...document.getElementsByTagName('body')][0];
+    
+   
+    if(dlgSimNao != null){
+        var titSimNao = document.getElementById('titSimNao');
+        var msgSimNao = document.getElementById('msgSimNao');
+
+        if(typeof(titulo) != 'undefined'){
+            titSimNao.innerText = titulo;
+        }
+
+        msgSimNao.innerText = msg;
+        dlgSimNao.style.display = 'block';
+    } else{
+        dlgSimNao = criaElementoDom('dialog', [['id', 'dlgSimNao']], ['dlgSimNao'], bodyElm, 'afterbegin');
+        
+        var boxDlg = criaElementoDom('div', [['id', 'boxDlgSimNao']], ['boxDlg'], dlgSimNao, 'afterbegin');
+        var btnErro = criaElementoDom('i', [['id', 'btnSairSimNao']], ['bi', 'bi-x-lg', 'btnErro'], boxDlg, 'beforeend');
+    
+        criaElementoDom('p', [['id', 'titSimNao']], ['titErro'], boxDlg, 'beforeend', typeof(titulo) != 'undefined' ? titulo : 'Alerta');
+        criaElementoDom('hr', [[]], ['sepSimNao'], boxDlg, 'beforeend');
+        
+        criaElementoDom('p', [['id', 'msgSimNao']], ['msgErro'], boxDlg, 'beforeend', msg);
+    
+        criaElementoDom('button', [['id', 'btnConfirma'], ['onclick', 'deleteChat()']], ['btnSimNao'], boxDlg, 'beforeend', 'Confirma');
+        criaElementoDom('button', [['id', 'btnCancela'], ['onclick', "$('#dlgSimNao').remove()"]], ['btnSimNao'], boxDlg, 'beforeend', 'Cancela');
+        
+        btnErro.addEventListener('click',(e)=>{
+            dlgSimNao.style.display = 'none';
+        })        
+    }
+   
 }

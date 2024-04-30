@@ -999,9 +999,28 @@ function encerraConversa(){
 
 
 
-function apagaConversa(){
 
+
+
+function deleteChat(){
+    
+    fetch(`${config.server}:${config.port}/deletechat/?id=${rowData.id_serial}`, {method: 'POST'})
+    .then(() => {
+        var oPar = new Object();
+            
+        oPar['idRetag'] = rowData.ID_RETAG;
+
+        MsgApi('api_brw_whats', 'deletaconversa', oPar);
+
+        $('#dlgSimNao').remove();
+    })
+    .catch((err) => {
+        console.log(err);
+        $('#dlgSimNao').remove();
+    });
 }
+
+
 
 
 
@@ -1034,6 +1053,9 @@ function vinculaContato(){
         
     })
 }
+
+
+
 
 
 
