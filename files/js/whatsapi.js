@@ -14,7 +14,7 @@ function abreMensagens(){
 
     dataMsg = '';
         
-    fetch(`${config.server}:${config.port}/getmsgfromchat/?id=${rowData.id_serial}&limit=80`)
+    disparaTimeoutPromise(fetch(`${config.server}:${config.port}/getmsgfromchat/?id=${rowData.id_serial}&limit=80`)
     .then((res) => {
         return res.json();
     })
@@ -27,7 +27,7 @@ function abreMensagens(){
     })
     .catch((err) => {
         console.log(err);
-    });
+    }), 10000, 'Erro de timeout, confira a API!')
     
 }
 
@@ -409,7 +409,7 @@ function EnviaMensagem(arq, objMedia){
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(body) };
 
-        fetch(`${config.server}:${config.port}/sendmsg`, options)
+        disparaTimeoutPromise(fetch(`${config.server}:${config.port}/sendmsg`, options)
         .then(() => {
             var oPar = new Object();          
     
@@ -419,7 +419,8 @@ function EnviaMensagem(arq, objMedia){
         })
         .catch((err) => {
             console.log(err);
-        });
+        }), 10000, 'Envio de mensagem atingiu o tempo limite, confira a API!')
+        
     }
     
     textArea.value = '';
@@ -593,28 +594,28 @@ function atualizaMensagens(){
 
     var divConversa = document.getElementById('conversa');
     
-    fetch(`${config.server}:${config.port}/getmsgfromchat/?id=${rowData.id_serial}&limit=10`)
-        .then((res) => {
-            return res.json();
-        })
-        .then(msgs =>{
-            if(divConversa == undefined) throw new Error('Problema ao inserir mensagens novas na conversa.');
-            
-            var msgNav = document.querySelector('#conversa').childNodes;
-            var idUltimaMensagem = msgNav[msgNav.length-1].dataset.id;
-            
-            for(var m = msgs.length-1; m > 0; m--){
-                if(msgs[m].id.id != idUltimaMensagem){
-                    insereMensagemDom(msgs[m], divConversa)
-                } else{
-                    break;
-                }
+    disparaTimeoutPromise(fetch(`${config.server}:${config.port}/getmsgfromchat/?id=${rowData.id_serial}&limit=10`)
+    .then((res) => {
+        return res.json();
+    })
+    .then(msgs =>{
+        if(divConversa == undefined) throw new Error('Problema ao inserir mensagens novas na conversa.');
+        
+        var msgNav = document.querySelector('#conversa').childNodes;
+        var idUltimaMensagem = msgNav[msgNav.length-1].dataset.id;
+        
+        for(var m = msgs.length-1; m > 0; m--){
+            if(msgs[m].id.id != idUltimaMensagem){
+                insereMensagemDom(msgs[m], divConversa)
+            } else{
+                break;
             }
+        }
+    })
+    .catch((err) => {
+        console.log(err);
+    }), 10000, 'Erro de timeout ao atualizar as mensagens, confira a API!')
 
-        })
-        .catch((err) => {
-            console.log(err);
-        });
 }
 
 
@@ -623,7 +624,6 @@ function atualizaMensagens(){
 
 
 function downloadInsereMedia(idSerial, tipo){
-
 
     fetch(`${config.server}:${config.port}/getmsgbyid/?id=${idSerial}`)
     .then((res) => {
@@ -1009,7 +1009,7 @@ function encerraConversa(){
 
 function deleteChat(){
     
-    fetch(`${config.server}:${config.port}/deletechat/?id=${rowData.id_serial}`, {method: 'POST'})
+    disparaTimeoutPromise(fetch(`${config.server}:${config.port}/deletechat/?id=${rowData.id_serial}`, {method: 'POST'})
     .then(() => {
         var oPar = new Object();
             
@@ -1023,7 +1023,8 @@ function deleteChat(){
     .catch((err) => {
         console.log(err);
         $('#dlgSimNao').remove();
-    });
+    }), 10000, 'Tempo limite para exclusão de chat atingida, confira a API!')
+    
 }
 
 
@@ -1113,4 +1114,25 @@ function encerrarSessao(){
     MsgApi('api_brw_whats', 'encerrar_sessao');
     
     return
+}
+
+
+
+
+
+function disparaTimeoutPromise(promise, time, msg){
+    
+    Promise.race([
+        promise,
+        new Promise((_, reject) => setTimeout(() => reject(), time))
+      ]).then(
+        function (value) {
+           //Resolveu a promise corretamente, mas não irei executar nada, somente para ter o bloco de resolved.
+        },
+        function (reason) {
+           errorMsg(msg, 'Timeout de requisição')
+        },
+      );
+
+      return;
 }

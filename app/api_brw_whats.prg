@@ -391,11 +391,14 @@ procedure vinculaChaveCli(oDom)
 	ace398->(DbGoTop())
 	
 	if ace398->( dbSeek(str(nId, 11)) )
-		ace398->(netRlock())
-		ace398->chave_cli := cChaveCli
-		ace398->(dbUnlock())
+		if ace398->(rlock())
+			ace398->chave_cli := cChaveCli
+			ace398->(dbUnlock())
 
-		HB_HSet( hErro, 'erro', {'Contato vinculado com sucesso', 'Sucesso', allTrim(cNomeCli)} )
+			HB_HSet( hErro, 'erro', {'Contato vinculado com sucesso', 'Sucesso'} )
+		else
+			HB_HSet( hErro, 'erro', {'Existe outro operador utilizando este chat!', 'Erro'} )			
+		endif
 	else
 		HB_HSet( hErro, 'erro', {'Erro ao vincular cadastro', 'Erro', ''} )
 	endif
