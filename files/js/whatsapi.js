@@ -19,14 +19,19 @@ function abreMensagens(){
         return res.json();
     })
     .then((msgs) =>{
-        //console.log(msgs);
+        if(msgs.length == 0){
+            throw new Error('Problema ao inserir mensagens novas na conversa.');
+        } 
+        
         montaChat(msgs);
         intervaloAtualiza = setInterval(()=>{
             atualizaMensagens()
         }, 8000)
     })
     .catch((err) => {
-        console.log(err);
+        fechaConversa();
+        errorMsg('Problema ao inserir mensagens novas na conversa.');
+        console.log(err);        
     }), 10000, 'Erro de timeout, confira a API!')
     
 }
@@ -599,7 +604,9 @@ function atualizaMensagens(){
         return res.json();
     })
     .then(msgs =>{
-        if(divConversa == undefined) throw new Error('Problema ao inserir mensagens novas na conversa.');
+        if(divConversa == undefined || msgs.length == 0){
+            throw new Error('Problema ao inserir mensagens novas na conversa.');
+        } 
         
         var msgNav = document.querySelector('#conversa').childNodes;
         var idUltimaMensagem = msgNav[msgNav.length-1].dataset.id;
@@ -613,8 +620,10 @@ function atualizaMensagens(){
         }
     })
     .catch((err) => {
+        fechaConversa();
+        errorMsg('Problema ao inserir mensagens novas na conversa.');
         console.log(err);
-    }), 10000, 'Erro de timeout ao atualizar as mensagens, confira a API!')
+    }), 20000, 'Erro de timeout ao atualizar as mensagens, confira a API!')
 
 }
 
