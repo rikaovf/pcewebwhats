@@ -46,6 +46,7 @@
 					var config = {};
 					var phoneEmpty = true;
 					var atualiza = false;
+					var intervaloAtualiza =0;
 					var intervaloChecaTable = 0;
 
 					/*setTimeout(() => {
