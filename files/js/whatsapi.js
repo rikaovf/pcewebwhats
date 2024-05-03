@@ -10,6 +10,19 @@ document.addEventListener('keyup', function(event) {
 
 
 
+function setConfig(configServer){
+    
+    if(Object.keys(configServer).length > 0){
+        config.server = configServer.server;
+        config.port = configServer.port;
+    } else{
+        errorMsg('URL da API não está preenchida no banco de dados, entre em contato com a Concentra!', 'Erro de configuração', true);
+    }
+}
+
+
+
+
 function abreMensagens(){
 
     dataMsg = '';
@@ -598,6 +611,7 @@ function retornaReferenciaResolucao(largura){
 function atualizaMensagens(){
 
     var divConversa = document.getElementById('conversa');
+    var arrMsgNova = [];
     
     disparaTimeoutPromise(fetch(`${config.server}:${config.port}/getmsgfromchat/?id=${rowData.id_serial}&limit=10`)
     .then((res) => {
@@ -613,11 +627,18 @@ function atualizaMensagens(){
         
         for(var m = msgs.length-1; m > 0; m--){
             if(msgs[m].id.id != idUltimaMensagem){
-                insereMensagemDom(msgs[m], divConversa)
+                arrMsgNova.push(msgs[m]);
             } else{
                 break;
             }
         }
+
+        if(arrMsgNova.length > 0){
+            arrMsgNova.reverse();
+            arrMsgNova.map((msg)=>{
+                insereMensagemDom(msg, divConversa);
+            })                        
+        } 
     })
     .catch((err) => {
         fechaConversa();

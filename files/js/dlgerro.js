@@ -10,10 +10,11 @@ function errorMsgApi(objErro){
 
 
 
-function errorMsg(erro, titulo){
+function errorMsg(erro, titulo, trava){
     var dlgErro = document.getElementById('dlgErro');
     var bodyElm = [...document.getElementsByTagName('body')][0];
     
+    trava = typeof(trava) != 'undefined' ? trava : false;
    
     if(dlgErro != null){
         var titErro = document.getElementById('titErro');
@@ -36,9 +37,11 @@ function errorMsg(erro, titulo){
         
         criaElementoDom('p', [['id', 'msgErro']], ['msgErro'], boxDlg, 'beforeend', erro);    
     
-        btnErro.addEventListener('click',(e)=>{
-            dlgErro.style.display = 'none';
-        })        
+        if(!trava){
+            btnErro.addEventListener('click',(e)=>{
+                dlgErro.style.display = 'none';
+            })        
+        }
     }
 }
 

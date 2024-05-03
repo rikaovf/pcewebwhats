@@ -52,6 +52,7 @@
 					/*setTimeout(() => {
 						atualizaChats();
 					}, 100);*/
+					MsgApi('api_brw_whats', 'loadconfig');
 					atualizaChats();
 
 					function atualizaChats(){
@@ -59,12 +60,6 @@
 						
 						return
 					}
-				</script>
-
-				<script type="module">
-					import {configServer} from '../files/js/config.js'
-					
-					config = configServer;
 				</script>
 			ENDTEXT	
 			//////////////////////////////////////////////////////////

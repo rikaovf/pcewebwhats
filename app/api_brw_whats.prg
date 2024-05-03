@@ -9,6 +9,8 @@ function Api_Brw_whats( oDom )
     endif
 
 	do case
+		case oDom:GetProc() == 'loadconfig'
+			loadConfig( oDom )						
 		case oDom:GetProc() == 'setdatawhatsapi'
 			SetDataWhatsApi( oDom )						
 		case oDom:GetProc() == 'carregaorcamentos'
@@ -42,6 +44,40 @@ retu oDom:Send()
 /***********************************/
 			 /*NOVO*/
 /***********************************/
+
+
+
+procedure loadConfig( oDom )
+
+local hData
+local hConfig := {=>}
+local aServer := {}
+local aARQS := { { "ACE920.001",,, "ICE9202" } }
+
+
+if ! abre_fecha_arquivos(aArqs, .T.)
+	abre_fecha_arquivos(aArqs, .F.)
+	return
+endif
+
+hData := USession('data_user')
+
+if ace920->(dbSeek(hData['numero'])) .and. !empty(ace920->w_apiurl)
+	aServer := HB_ATokens(ace920->w_apiurl, ":")
+	
+	if len(aServer) == 3
+		hConfig['server'] := allTrim(aServer[1]) + ':' + allTrim(aServer[2])
+		hConfig['port'] := allTrim(aServer[3])
+	endif
+endif
+
+oDom:SetJs('setConfig', hConfig);
+
+abre_fecha_arquivos(aArqs, .F.)
+
+return
+
+
 
 static function SetDataWhatsApi( oDom )
 
